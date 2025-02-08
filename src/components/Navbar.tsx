@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   return (
     <nav className="bg-white shadow-md">
@@ -51,13 +53,25 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Login Button */}
-          <Link
-            href="/login"
-            className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-          >
-            Login
-          </Link>
+          {/* Auth Buttons */}
+          {session ? (
+            <div className="hidden md:flex items-center space-x-4">
+              <p className="text-gray-700">Hello, {session.user?.name}</p>
+              <button
+                onClick={() => signOut()}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => signIn()}
+              className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Login
+            </button>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -102,12 +116,21 @@ export default function Navbar() {
           >
             History
           </Link>
-          <Link
-            href="/login"
-            className="block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 my-2"
-          >
-            Login
-          </Link>
+          {session ? (
+            <button
+              onClick={() => signOut()}
+              className="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 my-2"
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => signIn()}
+              className="block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 my-2"
+            >
+              Login
+            </button>
+          )}
         </div>
       )}
     </nav>
