@@ -11,8 +11,8 @@ export default function LoginPage() {
           This app requires a Linkedin account to work
         </p>
         <button
-          onClick={() => signIn("linkedin")}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg w-full hover:bg-gray-800"
+          onClick={() => signIn("")}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-700"
         >
           Sign in with Linkedin
         </button>
