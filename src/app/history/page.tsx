@@ -11,7 +11,7 @@ interface JobApplication {
   date: string;
 }
 
-// Dummy data simulating previously applied jobs (replace with DB queries later)
+// Dummy data simulating job applications (replace with real DB data later)
 const dummyApplications: JobApplication[] = [
   {
     id: 1,
@@ -88,7 +88,7 @@ const dummyApplications: JobApplication[] = [
   },
   {
     id: 10,
-    jobTitle: "Quality Assurance Engineer",
+    jobTitle: "QA Engineer",
     company: "IBM",
     applicationLink: "https://www.ibm.com/employment",
     resumeLink: "https://example.com/resume10.pdf",
@@ -96,6 +96,9 @@ const dummyApplications: JobApplication[] = [
   },
 ];
 
+// --------------------
+// Desktop Layout State
+// --------------------
 const ITEMS_PER_PAGE = 5;
 
 export default function JobHistoryPage() {
@@ -103,7 +106,6 @@ export default function JobHistoryPage() {
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
 
-  // Calculate total pages and current page items
   const totalPages = Math.ceil(dummyApplications.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = dummyApplications.slice(
@@ -111,82 +113,86 @@ export default function JobHistoryPage() {
     startIndex + ITEMS_PER_PAGE,
   );
 
-  const handleSelect = (application: JobApplication) => {
-    setSelectedApplication(application);
+  const handleSelectDesktop = (app: JobApplication) => {
+    setSelectedApplication(app);
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
+  // --------------------
+  // Mobile Accordion State
+  // --------------------
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  const toggleExpandMobile = (id: number) => {
+    setExpandedId(expandedId === id ? null : id);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">Job Application History</h1>
-      <div className="flex gap-6">
-        {/* Left Side: Paginated List of Job Applications */}
+    <div className="min-h-screen bg-gray-100 p-4 md:p-6">
+      <h1 className="text-2xl md:text-3xl font-bold mb-4 text-center md:text-left">
+        Job Application History
+      </h1>
+
+      {/* Desktop Layout: Two Columns (Visible on md and up) */}
+      <div className="hidden md:flex gap-6">
+        {/* Left Sidebar: Paginated List */}
         <div className="w-1/3 bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Applications</h2>
           <ul>
-            {currentItems.map((application) => (
+            {currentItems.map((app) => (
               <li
-                key={application.id}
-                onClick={() => handleSelect(application)}
-                className={`p-3 rounded cursor-pointer mb-2 hover:bg-gray-200 ${
-                  selectedApplication?.id === application.id
-                    ? "bg-gray-300"
-                    : ""
-                }`}
+                key={app.id}
+                onClick={() => handleSelectDesktop(app)}
+                className={`p-3 rounded cursor-pointer mb-2 hover:bg-gray-200 transition 
+                  ${selectedApplication?.id === app.id ? "bg-gray-300" : "bg-gray-100"}`}
               >
-                <p className="font-semibold">{application.jobTitle}</p>
-                <p className="text-sm text-gray-600">{application.company}</p>
-                <p className="text-xs text-gray-500">{application.date}</p>
+                <p className="font-medium text-base">{app.jobTitle}</p>
+                <p className="text-gray-600 text-sm">{app.company}</p>
+                <p className="text-gray-500 text-xs">{app.date}</p>
               </li>
             ))}
           </ul>
           {/* Pagination Controls */}
           <div className="flex justify-between mt-4">
             <button
-              onClick={handlePrevPage}
+              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50 text-sm"
             >
               Prev
             </button>
-            <span className="text-gray-700">
+            <span className="text-gray-700 text-sm">
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={handleNextPage}
+              onClick={() =>
+                currentPage < totalPages && setCurrentPage(currentPage + 1)
+              }
               disabled={currentPage === totalPages}
-              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50 text-sm"
             >
               Next
             </button>
           </div>
         </div>
 
-        {/* Right Side: Details of Selected Application */}
+        {/* Right Panel: Selected Application Details */}
         <div className="flex-1 bg-white p-4 rounded-lg shadow-md">
           {selectedApplication ? (
             <>
               <h2 className="text-2xl font-semibold mb-4">
                 {selectedApplication.jobTitle}
               </h2>
-              <p className="mb-2">
+              <p className="mb-2 text-base">
                 <strong>Company:</strong> {selectedApplication.company}
               </p>
-              <p className="mb-2">
+              <p className="mb-2 text-base">
                 <strong>Date Applied:</strong> {selectedApplication.date}
               </p>
               <a
                 href={selectedApplication.applicationLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:underline block mb-2"
+                className="text-blue-500 hover:underline block mb-2 text-base"
               >
                 View Job Posting
               </a>
@@ -194,17 +200,61 @@ export default function JobHistoryPage() {
                 href={selectedApplication.resumeLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
+                className="text-blue-500 hover:underline text-base"
               >
                 View Resume Used
               </a>
             </>
           ) : (
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-base">
               Select an application from the list to view details.
             </p>
           )}
         </div>
+      </div>
+
+      {/* Mobile Layout: Accordion Style (Visible on small screens) */}
+      <div className="md:hidden">
+        {dummyApplications.map((app) => (
+          <div
+            key={app.id}
+            className="bg-white mb-4 rounded-lg shadow-md overflow-hidden"
+          >
+            <div
+              onClick={() => toggleExpandMobile(app.id)}
+              className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-200 transition"
+            >
+              <div>
+                <p className="font-medium text-base">{app.jobTitle}</p>
+                <p className="text-gray-600 text-sm">{app.company}</p>
+                <p className="text-gray-500 text-xs">{app.date}</p>
+              </div>
+              <div className="text-gray-500 text-xl">
+                {expandedId === app.id ? "−" : "+"}
+              </div>
+            </div>
+            {expandedId === app.id && (
+              <div className="p-4 border-t border-gray-200">
+                <a
+                  href={app.applicationLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline block mb-2 text-sm"
+                >
+                  View Job Posting
+                </a>
+                <a
+                  href={app.resumeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline text-sm"
+                >
+                  View Resume Used
+                </a>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

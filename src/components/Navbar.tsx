@@ -56,7 +56,6 @@ export default function Navbar() {
           {/* Auth Buttons */}
           {session ? (
             <div className="hidden md:flex items-center space-x-4">
-              <p className="text-gray-700">Hello, {session.user?.name}</p>
               <button
                 onClick={() => signOut()}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
