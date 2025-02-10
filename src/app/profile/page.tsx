@@ -55,10 +55,6 @@ export default function ProfilePage() {
     }
   }, [session, router]);
 
-  if (status === "unauthenticated") {
-    return null;
-  }
-
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -185,6 +181,7 @@ export default function ProfilePage() {
     localStorage.setItem("userProfile", JSON.stringify(profileData));
     setProfile(profileData);
     setIsEditing(false);
+    console.log(profile);
   };
 
   return (

@@ -105,19 +105,6 @@ const dummyApplications: JobApplication[] = [
 const ITEMS_PER_PAGE = 5;
 
 export default function JobHistoryPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status == "unauthenticated" && !session) {
-      router.push("/login");
-    }
-  }, [session, status, router]);
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
@@ -133,6 +120,19 @@ export default function JobHistoryPage() {
   // --------------------
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState<JobApplication | null>(null);
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status == "unauthenticated" && !session) {
+      router.push("/login");
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   const handleDeleteClick = (job: JobApplication) => {
     setJobToDelete(job);
