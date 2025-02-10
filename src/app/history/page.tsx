@@ -109,14 +109,10 @@ export default function JobHistoryPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (status == "unauthenticated" && !session) {
       router.push("/login");
     }
-  }, [session, router]);
-
-  if (status === "unauthenticated") {
-    return null;
-  }
+  }, [session, status, router]);
 
   if (status === "loading") {
     return <p>Loading...</p>;

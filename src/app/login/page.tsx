@@ -9,10 +9,10 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
+    if (status == "unauthenticated" && !session) {
       router.push("/");
     }
-  }, [session, router]);
+  }, [session, status, router]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
