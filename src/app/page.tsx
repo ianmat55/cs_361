@@ -2,9 +2,36 @@
 
 import Head from "next/head";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleGenerate = () => {
+    // Wait until the session status is determined
+    if (status === "loading") return;
+
+    // If the user is not signed in, redirect to the login page
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    // Check if the user's profile is filled out (mock using localStorage)
+    const profileData = localStorage.getItem("userProfile");
+    if (!profileData) {
+      router.push("/profile");
+      return;
+    }
+
+    // Otherwise, proceed with resume generation (you can add further logic here)
+    // For demonstration, we can simply log or redirect to a resume page.
+    console.log("Generating resume...");
+    // router.push("/generate-resume"); // Uncomment when a generation page is ready
+  };
 
   return (
     <>
@@ -26,7 +53,10 @@ export default function Home() {
               placeholder="Enter job title or description..."
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+            <button
+              onClick={handleGenerate}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
               Generate
             </button>
           </div>

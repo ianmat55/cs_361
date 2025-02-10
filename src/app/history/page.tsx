@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 interface JobApplication {
   id: number;
@@ -105,7 +106,6 @@ export default function JobHistoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
-
   const totalPages = Math.ceil(dummyApplications.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = dummyApplications.slice(
@@ -113,6 +113,30 @@ export default function JobHistoryPage() {
     startIndex + ITEMS_PER_PAGE,
   );
 
+  // --------------------
+  // Modal & Delete State
+  // --------------------
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<JobApplication | null>(null);
+
+  const handleDeleteClick = (job: JobApplication) => {
+    setJobToDelete(job);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (jobToDelete) {
+      // Simulate deletion (replace with API call if needed)
+      console.log(`Deleted job: ${jobToDelete.jobTitle}`);
+      // For demo, we won't update the list, but in a real app you would update state here.
+      setIsModalOpen(false);
+      setJobToDelete(null);
+    }
+  };
+
+  // --------------------
+  // Desktop: Select Application for Details
+  // --------------------
   const handleSelectDesktop = (app: JobApplication) => {
     setSelectedApplication(app);
   };
@@ -142,8 +166,11 @@ export default function JobHistoryPage() {
               <li
                 key={app.id}
                 onClick={() => handleSelectDesktop(app)}
-                className={`p-3 rounded cursor-pointer mb-2 hover:bg-gray-200 transition 
-                  ${selectedApplication?.id === app.id ? "bg-gray-300" : "bg-gray-100"}`}
+                className={`p-3 rounded cursor-pointer mb-2 hover:bg-gray-200 transition ${
+                  selectedApplication?.id === app.id
+                    ? "bg-gray-300"
+                    : "bg-gray-100"
+                }`}
               >
                 <p className="font-medium text-base">{app.jobTitle}</p>
                 <p className="text-gray-600 text-sm">{app.company}</p>
@@ -176,35 +203,47 @@ export default function JobHistoryPage() {
         </div>
 
         {/* Right Panel: Selected Application Details */}
-        <div className="flex-1 bg-white p-4 rounded-lg shadow-md">
+        <div className="relative flex-1 bg-white p-4 rounded-lg shadow-md">
           {selectedApplication ? (
-            <>
-              <h2 className="text-2xl font-semibold mb-4">
-                {selectedApplication.jobTitle}
-              </h2>
-              <p className="mb-2 text-base">
-                <strong>Company:</strong> {selectedApplication.company}
-              </p>
-              <p className="mb-2 text-base">
-                <strong>Date Applied:</strong> {selectedApplication.date}
-              </p>
-              <a
-                href={selectedApplication.applicationLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline block mb-2 text-base"
+            <div>
+              {/* Delete Button in Top Right */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(selectedApplication);
+                }}
+                className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600"
               >
-                View Job Posting
-              </a>
-              <a
-                href={selectedApplication.resumeLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:underline text-base"
-              >
-                View Resume Used
-              </a>
-            </>
+                Delete
+              </button>
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">
+                  {selectedApplication.jobTitle}
+                </h2>
+                <p className="mb-2 text-base">
+                  <strong>Company:</strong> {selectedApplication.company}
+                </p>
+                <p className="mb-2 text-base">
+                  <strong>Date Applied:</strong> {selectedApplication.date}
+                </p>
+                <a
+                  href={selectedApplication.applicationLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline block mb-2 text-base"
+                >
+                  View Job Posting
+                </a>
+                <a
+                  href={selectedApplication.resumeLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline text-base"
+                >
+                  View Resume Used
+                </a>
+              </div>
+            </div>
           ) : (
             <p className="text-gray-600 text-base">
               Select an application from the list to view details.
@@ -218,7 +257,7 @@ export default function JobHistoryPage() {
         {dummyApplications.map((app) => (
           <div
             key={app.id}
-            className="bg-white mb-4 rounded-lg shadow-md overflow-hidden"
+            className="relative bg-white mb-4 rounded-lg shadow-md overflow-hidden"
           >
             <div
               onClick={() => toggleExpandMobile(app.id)}
@@ -229,6 +268,16 @@ export default function JobHistoryPage() {
                 <p className="text-gray-600 text-sm">{app.company}</p>
                 <p className="text-gray-500 text-xs">{app.date}</p>
               </div>
+              {/* Delete Button in Mobile: Positioned at top-right */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(app);
+                }}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
+              >
+                Delete
+              </button>
               <div className="text-gray-500 text-xl">
                 {expandedId === app.id ? "−" : "+"}
               </div>
@@ -256,6 +305,16 @@ export default function JobHistoryPage() {
           </div>
         ))}
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={confirmDelete}
+        message={`Are you sure you want to delete "${
+          jobToDelete?.jobTitle || ""
+        }"?`}
+      />
     </div>
   );
 }
