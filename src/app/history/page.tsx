@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import ConfirmationModal from "@/components/ConfirmationModal";
 
 interface JobApplication {
@@ -103,6 +105,17 @@ const dummyApplications: JobApplication[] = [
 const ITEMS_PER_PAGE = 5;
 
 export default function JobHistoryPage() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    const router = useRouter();
+    router.push("/login");
+  }
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-// Define TypeScript interfaces for the different sections:
 interface PersonalInfo {
   fullName: string;
   email: string;
@@ -45,12 +46,20 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  // State for profile data
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (status === "unauthenticated") {
+    const router = useRouter();
+    router.push("/login");
+  }
+
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  // State to control edit mode
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  // Individual form states:
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     fullName: "",
     email: "",
