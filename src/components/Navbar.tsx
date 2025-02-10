@@ -10,6 +10,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
+  if (status === "loading") {
+    return;
+  }
+
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-6xl mx-auto px-4">

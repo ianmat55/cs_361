@@ -9,10 +9,14 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (!session) {
       router.push("/");
     }
-  }, [status, router]);
+  }, [session, router]);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
