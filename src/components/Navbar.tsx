@@ -9,6 +9,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const { data: session, status } = useSession();
+
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-6xl mx-auto px-4">

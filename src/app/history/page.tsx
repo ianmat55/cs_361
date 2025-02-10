@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ConfirmationModal from "@/components/ConfirmationModal";
@@ -106,14 +106,20 @@ const ITEMS_PER_PAGE = 5;
 
 export default function JobHistoryPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+  }, [session, router]);
+
+  if (status === "unauthenticated") {
+    return null;
+  }
 
   if (status === "loading") {
     return <p>Loading...</p>;
-  }
-
-  if (status === "unauthenticated") {
-    const router = useRouter();
-    router.push("/login");
   }
 
   const [currentPage, setCurrentPage] = useState(1);

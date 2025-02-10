@@ -47,14 +47,20 @@ interface UserProfile {
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+  }, [session, router]);
+
+  if (status === "unauthenticated") {
+    return null;
+  }
 
   if (status === "loading") {
     return <p>Loading...</p>;
-  }
-
-  if (status === "unauthenticated") {
-    const router = useRouter();
-    router.push("/login");
   }
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
