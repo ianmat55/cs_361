@@ -11,7 +11,7 @@ const faqData = [
   {
     question: "Is JobFit AI free to use?",
     answer:
-      "We offer both free and premium plans. The free plan includes basic resume generation, while the premium plan offers more customization options.",
+      "We offer both free and pay as you go plans. The free plan includes basic resume generation limited to 10 resumes, while the paid plan offers more generations at a small cost.",
   },
   {
     question: "Which platforms does JobFit AI support?",
@@ -21,7 +21,7 @@ const faqData = [
   {
     question: "How do I edit my resume after generating it?",
     answer:
-      "You can edit your resume directly within JobFit AI’s editor or download it and make changes in your preferred document editor.",
+      "You can't edit your resume directly. Documents will be downloaded in pdf format (Subject to change)",
   },
   {
     question: "How do I contact support?",

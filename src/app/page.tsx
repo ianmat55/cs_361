@@ -11,24 +11,20 @@ export default function Home() {
   const router = useRouter();
 
   const handleGenerate = () => {
-    // Wait until the session status is determined
     if (status === "loading") return;
 
-    // If the user is not signed in, redirect to the login page
     if (!session) {
       router.push("/login");
       return;
     }
 
-    // Check if the user's profile is filled out (mock using localStorage)
     const profileData = localStorage.getItem("userProfile");
     if (!profileData) {
       router.push("/profile");
       return;
     }
 
-    // Otherwise, proceed with resume generation (you can add further logic here)
-    // For demonstration, we can simply log or redirect to a resume page.
+    // temp until generation func is ready
     console.log("Generating resume...");
     // router.push("/generate-resume"); // Uncomment when a generation page is ready
   };
@@ -70,9 +66,11 @@ export default function Home() {
 
           {showInfo && (
             <div className="mt-3 p-4 bg-white shadow-md rounded-lg text-gray-700 max-w-lg">
-              <p>1. Enter a job title or description.</p>
-              <p>2. Click "Generate" to create a tailored resume.</p>
-              <p>3. Download or tweak your resume for the best fit.</p>
+              <p>
+                Just drop the link to your desired job post, and our smart
+                resume formatter will tailor your resume to match the
+                role-perfectly aligned with your skills and experience.
+              </p>
             </div>
           )}
         </section>
