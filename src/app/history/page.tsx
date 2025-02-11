@@ -120,6 +120,7 @@ export default function JobHistoryPage() {
   // --------------------
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState<JobApplication | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -159,8 +160,6 @@ export default function JobHistoryPage() {
   // --------------------
   // Mobile Accordion State
   // --------------------
-  const [expandedId, setExpandedId] = useState<number | null>(null);
-
   const toggleExpandMobile = (id: number) => {
     setExpandedId(expandedId === id ? null : id);
   };

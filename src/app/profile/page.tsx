@@ -46,19 +46,6 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!session) {
-      router.push("/login");
-    }
-  }, [session, router]);
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -71,6 +58,15 @@ export default function ProfilePage() {
   const [jobExperiences, setJobExperiences] = useState<JobExperience[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [educationEntries, setEducationEntries] = useState<Education[]>([]);
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/login");
+    }
+  }, [session, router]);
 
   // On mount, load stored profile (if any)
   useEffect(() => {
@@ -90,6 +86,10 @@ export default function ProfilePage() {
       setIsEditing(true);
     }
   }, []);
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   // Handlers for the personal information fields
   const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
