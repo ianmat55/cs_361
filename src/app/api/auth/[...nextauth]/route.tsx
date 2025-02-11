@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -32,14 +32,9 @@ export const authOptions: NextAuthOptions = {
         if (profile) {
           token.name = profile.name;
           token.email = profile.email;
-          token.picture = profile.picture;
         }
       }
       return token;
-    },
-    async session({ session, token }) {
-      session.user.accessToken = token.accessToken;
-      return session;
     },
   },
 };
