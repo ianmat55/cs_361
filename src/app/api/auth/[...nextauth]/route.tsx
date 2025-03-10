@@ -2,6 +2,13 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import { NextAuthOptions } from "next-auth";
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = global as unknown as { prisma?: PrismaClient };
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -26,6 +33,46 @@ const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
+    async signIn({ user }) {
+      if (!user.email) return false; // Ensure email exists
+
+      try {
+        const existingUser = await prisma.users.findUnique({
+          where: { email: user.email },
+        });
+
+        if (existingUser) {
+          // Only update if `full_name` has changed
+          if (existingUser.full_name !== user.name) {
+            await prisma.users.update({
+              where: { email: user.email },
+              data: { full_name: user.name, updated_at: new Date() },
+            });
+          }
+        } else {
+          // Create a new user if they don’t exist
+          await prisma.users.create({
+            data: {
+              email: user.email,
+              full_name: user.name,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Database error:", error);
+        return false;
+      }
+
+      return true;
+    },
+
+    async session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id as number;
+      }
+      return session;
+    },
+
     async jwt({ token, account, profile }) {
       if (account) {
         token.accessToken = account.access_token;
@@ -40,4 +87,4 @@ const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, authOptions };

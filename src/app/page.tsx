@@ -10,7 +10,7 @@ export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (status === "loading") return;
 
     if (!session) {
@@ -24,9 +24,30 @@ export default function Home() {
       return;
     }
 
-    // temp until generation func is ready
-    console.log("Generating resume...");
-    // router.push("/generate-resume"); // Uncomment when a generation page is ready
+    try {
+      const job_url =
+        "https://www.linkedin.com/jobs/view/internship-service-technician-trainee-spring-2025-at-tesla-4163301136?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic";
+
+      const response = await fetch(
+        // "http://143.198.58.45:5050/job-posting-scrape/",
+        "http://localhost:5050/job-posting-scrape/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ job_url: job_url }),
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch");
+
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // router.push("http://143.198.58.45/generate-resume"); // Uncomment when a generation page is ready
   };
 
   return (

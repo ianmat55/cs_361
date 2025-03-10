@@ -70,21 +70,20 @@ export default function ProfilePage() {
 
   // On mount, load stored profile (if any)
   useEffect(() => {
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      const parsed: UserProfile = JSON.parse(storedProfile);
-      setProfile(parsed);
-      // Pre-fill each section’s state
-      setPersonalInfo(parsed.personalInfo);
-      setSkills(parsed.skills);
-      setJobExperiences(parsed.jobExperiences);
-      setProjects(parsed.projects);
-      setEducationEntries(parsed.educationEntries);
-      setIsEditing(false);
-    } else {
-      // No stored profile – start editing
-      setIsEditing(true);
-    }
+    const fetchProfile = async () => {
+      const response = await fetch("/api/profile");
+      if (response.ok) {
+        const data = await response.json();
+        setProfile(data);
+        setPersonalInfo(data.personalInfo);
+        setSkills(data.skills);
+        setJobExperiences(data.jobExperiences);
+        setProjects(data.projects);
+        setEducationEntries(data.educationEntries);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   if (status === "loading") {
@@ -168,9 +167,9 @@ export default function ProfilePage() {
     ]);
   };
 
-  // Handle form submission – save profile data to localStorage
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const profileData: UserProfile = {
       personalInfo,
       skills,
@@ -178,10 +177,20 @@ export default function ProfilePage() {
       projects,
       educationEntries,
     };
-    localStorage.setItem("userProfile", JSON.stringify(profileData));
-    setProfile(profileData);
-    setIsEditing(false);
-    console.log(profile);
+
+    const response = await fetch("/api/profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(profileData),
+    });
+
+    if (response.ok) {
+      console.log("Profile saved!");
+    } else {
+      console.error("Error saving profile");
+    }
   };
 
   return (
