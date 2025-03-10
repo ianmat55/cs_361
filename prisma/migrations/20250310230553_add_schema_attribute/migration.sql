@@ -1,3 +1,6 @@
+-- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "vector" WITH SCHEMA "public";
+
 -- CreateTable
 CREATE TABLE "user_education" (
     "edu_id" SERIAL NOT NULL,
@@ -8,7 +11,7 @@ CREATE TABLE "user_education" (
     "start_date" DATE,
     "end_date" DATE,
     "gpa" TEXT,
-    "embedding" BYTEA NOT NULL,
+    "embedding" vector NOT NULL,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
 
@@ -24,7 +27,7 @@ CREATE TABLE "user_experiences" (
     "start_date" DATE,
     "end_date" DATE,
     "responsibilities" TEXT,
-    "embedding" BYTEA NOT NULL,
+    "embedding" vector NOT NULL,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
 
@@ -38,7 +41,7 @@ CREATE TABLE "user_projects" (
     "project_name" TEXT NOT NULL,
     "description" TEXT,
     "tech_stack" TEXT,
-    "embedding" BYTEA NOT NULL,
+    "embedding" vector NOT NULL,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
 
@@ -62,7 +65,7 @@ CREATE TABLE "user_skills" (
     "user_id" INTEGER,
     "skill_name" TEXT NOT NULL,
     "proficiency_level" TEXT,
-    "embedding" BYTEA NOT NULL,
+    "embedding" vector NOT NULL,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "user_skills_pkey" PRIMARY KEY ("skill_id")
@@ -92,9 +95,6 @@ CREATE TABLE "users" (
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_education_user_id_key" ON "user_education"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");

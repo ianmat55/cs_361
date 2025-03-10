@@ -36,7 +36,6 @@ interface Education {
   graduationYear: string;
 }
 
-// Combined profile interface
 interface UserProfile {
   personalInfo: PersonalInfo;
   skills: Skill[];
@@ -46,7 +45,6 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
@@ -74,7 +72,6 @@ export default function ProfilePage() {
       const response = await fetch("/api/profile");
       if (response.ok) {
         const data = await response.json();
-        setProfile(data);
         setPersonalInfo(data.personalInfo);
         setSkills(data.skills);
         setJobExperiences(data.jobExperiences);
@@ -186,8 +183,10 @@ export default function ProfilePage() {
       body: JSON.stringify(profileData),
     });
 
+    console.log(response);
     if (response.ok) {
-      console.log("Profile saved!");
+      router.refresh();
+      setIsEditing(false);
     } else {
       console.error("Error saving profile");
     }

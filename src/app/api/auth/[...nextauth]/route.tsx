@@ -67,22 +67,27 @@ const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      if (session.user && token.id) {
-        session.user.id = token.id as number;
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+          name: token.name as string,
+        };
       }
       return session;
     },
 
-    async jwt({ token, account, profile }) {
-      if (account) {
-        token.accessToken = account.access_token;
-        if (profile) {
-          token.name = profile.name;
-          token.email = profile.email;
-        }
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id; // Ensure user ID is saved
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
+  },
+  session: {
+    strategy: "jwt",
   },
 };
 
