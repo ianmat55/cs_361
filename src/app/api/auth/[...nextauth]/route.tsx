@@ -66,13 +66,14 @@ const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async session({ session, token }) {
-      if (token) {
+    async session({ session, user }) {
+      if (user) {
         session.user = {
-          id: token.id as string,
-          email: token.email as string,
-          name: token.name as string,
+          id: user.id as string,
+          email: user.email as string,
+          name: user.name as string,
         };
+        session.user.id = user.id;
       }
       return session;
     },

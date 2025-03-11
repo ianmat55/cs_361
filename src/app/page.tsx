@@ -9,12 +9,14 @@ export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
   const { data: session, status } = useSession();
   const [profileData, setProfileData] = useState(null);
+  const [jobUrl, setJobUrl] = useState(""); // Store job URL input
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!session?.user?.email) return;
 
+      console.log(session);
       try {
         const response = await fetch("/api/profile", {
           method: "GET",
@@ -50,30 +52,28 @@ export default function Home() {
       return;
     }
 
-    try {
-      const job_url =
-        "https://www.linkedin.com/jobs/view/internship-service-technician-trainee-spring-2025-at-tesla-4163301136?utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic";
+    if (!jobUrl) {
+      alert("Please enter a job URL.");
+      return;
+    }
 
-      const response = await fetch(
-        // "http://143.198.58.45:5050/job-posting-scrape/",
-        "http://localhost:5050/job-posting-scrape/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ job_url: job_url }),
+    try {
+      console.log(jobUrl);
+      const response = await fetch("http://localhost:1709/generate-resume", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ jobUrl: jobUrl, userId: 1 }),
+      });
 
       if (!response.ok) throw new Error("Failed to fetch");
 
       const result = await response.json();
-      console.log(result);
+      console.log("Generated Resume:", result);
     } catch (error) {
       console.error("Error:", error);
     }
-    // router.push("http://143.198.58.45/generate-resume"); // Uncomment when a generation page is ready
   };
 
   return (
@@ -93,8 +93,10 @@ export default function Home() {
           <div className="flex items-center gap-3 bg-white p-4 rounded-lg shadow-md">
             <input
               type="text"
-              placeholder="Enter job title or description..."
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={jobUrl}
+              onChange={(e) => setJobUrl(e.target.value)}
+              placeholder="Enter job post URL..."
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-80"
             />
             <button
               onClick={handleGenerate}
@@ -116,7 +118,7 @@ export default function Home() {
               <p>
                 Just drop the link to your desired job post, and our smart
                 resume formatter will tailor your resume to match the
-                role-perfectly aligned with your skills and experience.
+                role—perfectly aligned with your skills and experience.
               </p>
             </div>
           )}
