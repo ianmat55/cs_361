@@ -12,8 +12,8 @@ interface PersonalInfo {
 
 interface Skill {
   skillName: string;
-  years: string;
-  demonstration: string;
+  years_exp: string;
+  example: string;
 }
 
 interface JobExperience {
@@ -137,7 +137,7 @@ export default function ProfilePage() {
 
   // Functions to add new empty entries for sections
   const addSkill = () => {
-    setSkills([...skills, { skillName: "", years: "", demonstration: "" }]);
+    setSkills([...skills, { skillName: "", years_exp: "", example: "" }]);
   };
 
   const addJobExperience = () => {
@@ -287,16 +287,16 @@ export default function ProfilePage() {
                   </div>
                   <div className="mb-3">
                     <label
-                      htmlFor={`years-${index}`}
+                      htmlFor={`years_exp-${index}`}
                       className="block font-medium mb-1"
                     >
                       How many years of experience do you have with this skill?
                     </label>
                     <input
                       type="text"
-                      id={`years-${index}`}
-                      name="years"
-                      value={skill.years}
+                      id={`years_exp-${index}`}
+                      name="years_exp"
+                      value={skill.years_exp}
                       onChange={(e) => handleSkillChange(index, e)}
                       className="w-full p-2 border border-gray-300 rounded"
                       placeholder="e.g. 3 years"
@@ -305,16 +305,16 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label
-                      htmlFor={`demonstration-${index}`}
+                      htmlFor={`example-${index}`}
                       className="block font-medium mb-1"
                     >
                       Can you describe a time when you applied this skill
                       effectively?
                     </label>
                     <textarea
-                      id={`demonstration-${index}`}
-                      name="demonstration"
-                      value={skill.demonstration}
+                      id={`example-${index}`}
+                      name="example"
+                      value={skill.example}
                       onChange={(e) => handleSkillChange(index, e)}
                       className="w-full p-2 border border-gray-300 rounded"
                       placeholder="Describe an experience where this skill made an impact..."
@@ -622,10 +622,12 @@ export default function ProfilePage() {
                 skills.map((skill, index) => (
                   <div key={index} className="mb-2">
                     <p>
-                      <strong>{skill.skillName}</strong> – {skill.years} of
-                      experience
+                      <strong>{skill.skillName}</strong> – {skill.years_exp}{" "}
+                      years of experience
                     </p>
-                    <p className="ml-4 text-gray-700">{skill.demonstration}</p>
+                    <p className="ml-4 text-gray-700">
+                      example - {skill.example}
+                    </p>
                   </div>
                 ))
               ) : (

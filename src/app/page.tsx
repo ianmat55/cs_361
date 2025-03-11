@@ -1,14 +1,41 @@
 "use client";
 
 import Head from "next/head";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
   const { data: session, status } = useSession();
+  const [profileData, setProfileData] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!session?.user?.email) return;
+
+      try {
+        const response = await fetch("/api/profile", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+        setProfileData(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    if (status === "authenticated") {
+      fetchProfile();
+    }
+  }, [session, status]);
 
   const handleGenerate = async () => {
     if (status === "loading") return;
@@ -18,7 +45,6 @@ export default function Home() {
       return;
     }
 
-    const profileData = localStorage.getItem("userProfile");
     if (!profileData) {
       router.push("/profile");
       return;

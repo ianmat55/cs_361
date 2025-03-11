@@ -19,7 +19,14 @@ export async function POST(req: Request) {
     // Ensure the user exists
     const user = await prisma.users.upsert({
       where: { email: userEmail },
-      update: {},
+      update: {
+        ...(body.personalInfo?.fullName && {
+          full_name: body.personalInfo.fullName,
+        }),
+        ...(body.personalInfo?.location && {
+          location: body.personalInfo.location,
+        }),
+      },
       create: {
         email: userEmail,
         full_name: body.personalInfo?.fullName || "",
@@ -56,7 +63,7 @@ export async function POST(req: Request) {
             text: `${job.jobTitle} at ${job.company}: ${job.description}`,
             type: "experience",
           }),
-        }).then((res) => res.json())
+        }).then((res) => res.json()),
       ),
       ...projects.map((project) =>
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/embedding`, {
@@ -71,7 +78,7 @@ export async function POST(req: Request) {
             text: `${project.projectName}: ${project.description}`,
             type: "project",
           }),
-        }).then((res) => res.json())
+        }).then((res) => res.json()),
       ),
       ...educationEntries.map((edu) =>
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/embedding`, {
@@ -86,7 +93,7 @@ export async function POST(req: Request) {
             text: `${edu.degree} at ${edu.institution} (${edu.graduationYear})`,
             type: "education",
           }),
-        }).then((res) => res.json())
+        }).then((res) => res.json()),
       ),
       ...skills.map((skill) =>
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/embedding`, {
@@ -98,10 +105,10 @@ export async function POST(req: Request) {
           credentials: "include",
           body: JSON.stringify({
             userId: user.user_id,
-            text: `${skill.skillName} (${skill.years} years)`,
+            text: `${skill.skillName} (${skill.years_exp} years) - Example: ${skill.example}`,
             type: "skill",
           }),
-        }).then((res) => res.json())
+        }).then((res) => res.json()),
       ),
     ];
 
@@ -114,11 +121,11 @@ export async function POST(req: Request) {
       await prisma.$executeRaw`
         INSERT INTO user_experiences (user_id, role, company, start_date, end_date, responsibilities, embedding) 
         VALUES (${user.user_id}, ${job.jobTitle}, ${job.company}, ${
-        job.startDate ? new Date(job.startDate) : null
-      }, 
+          job.startDate ? new Date(job.startDate) : null
+        }, 
                 ${job.endDate ? new Date(job.endDate) : null}, ${
-        job.description
-      }, ${embedding}::vector);
+                  job.description
+                }, ${embedding}::vector);
       `;
     }
 
@@ -126,7 +133,7 @@ export async function POST(req: Request) {
     for (let i = 0; i < projects.length; i++) {
       const project = projects[i];
       const embedding = pgvector.toSql(
-        embeddingResponses[jobExperiences.length + i]?.embedding || []
+        embeddingResponses[jobExperiences.length + i]?.embedding || [],
       );
       await prisma.$executeRaw`
         INSERT INTO user_projects (user_id, project_name, description, tech_stack, embedding) 
@@ -139,13 +146,13 @@ export async function POST(req: Request) {
       const edu = educationEntries[i];
       const embedding = pgvector.toSql(
         embeddingResponses[jobExperiences.length + projects.length + i]
-          ?.embedding || []
+          ?.embedding || [],
       );
       await prisma.$executeRaw`
         INSERT INTO user_education (user_id, degree, institution, start_date, embedding) 
         VALUES (${user.user_id}, ${edu.degree}, ${edu.institution}, ${
-        edu.graduationYear ? new Date(`${edu.graduationYear}-01-01`) : null
-      }, ${embedding}::vector);
+          edu.graduationYear ? new Date(`${edu.graduationYear}-01-01`) : null
+        }, ${embedding}::vector);
       `;
     }
 
@@ -155,17 +162,17 @@ export async function POST(req: Request) {
       const embedding = pgvector.toSql(
         embeddingResponses[
           jobExperiences.length + projects.length + educationEntries.length + i
-        ]?.embedding || []
+        ]?.embedding || [],
       );
       await prisma.$executeRaw`
-        INSERT INTO user_skills (user_id, skill_name, proficiency_level, embedding) 
-        VALUES (${user.user_id}, ${skill.skillName}, ${skill.years}, ${embedding}::vector);
+        INSERT INTO user_skills (user_id, skill_name, years_exp, example, embedding) 
+        VALUES (${user.user_id}, ${skill.skillName}, ${skill.years_exp}::int, ${skill.example}, ${embedding}::vector);
       `;
     }
 
     return new Response(
       JSON.stringify({ message: "Profile updated successfully!" }),
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Database Error:", error);
@@ -209,8 +216,8 @@ export async function GET(req: Request) {
       skills:
         user.user_skills?.map((s) => ({
           skillName: s.skill_name || "",
-          years: s.proficiency_level || "",
-          demonstration: "",
+          years_exp: s.years_exp || "",
+          example: s.example || "",
         })) || [],
 
       jobExperiences:
@@ -242,7 +249,7 @@ export async function GET(req: Request) {
     console.error("Database Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -274,13 +281,13 @@ export async function DELETE(req: Request) {
 
     return NextResponse.json(
       { message: "Profile deleted successfully!" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Database Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
