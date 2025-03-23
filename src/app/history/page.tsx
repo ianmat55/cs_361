@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import ConfirmationModal from "@/components/ConfirmationModal";
 
 interface JobApplication {
@@ -105,6 +105,12 @@ const dummyApplications: JobApplication[] = [
 const ITEMS_PER_PAGE = 5;
 
 export default function JobHistoryPage() {
+  const { data: session } = useSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedApplication, setSelectedApplication] =
     useState<JobApplication | null>(null);
@@ -112,7 +118,7 @@ export default function JobHistoryPage() {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const currentItems = dummyApplications.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE,
+    startIndex + ITEMS_PER_PAGE
   );
 
   // --------------------
@@ -122,14 +128,7 @@ export default function JobHistoryPage() {
   const [jobToDelete, setJobToDelete] = useState<JobApplication | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status == "unauthenticated" && !session) {
-      router.push("/login");
-    }
-  }, [session, status, router]);
+  const { status } = useSession();
 
   if (status === "loading") {
     return <p>Loading...</p>;

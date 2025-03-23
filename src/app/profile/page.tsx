@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 interface PersonalInfo {
   fullName: string;
@@ -45,8 +46,14 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const router = useRouter();
 
+  if (!session) {
+    redirect("/login");
+  }
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     fullName: "",
     email: "",
@@ -56,15 +63,6 @@ export default function ProfilePage() {
   const [jobExperiences, setJobExperiences] = useState<JobExperience[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [educationEntries, setEducationEntries] = useState<Education[]>([]);
-
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!session) {
-      router.push("/login");
-    }
-  }, [session, router]);
 
   // On mount, load stored profile (if any)
   useEffect(() => {
@@ -82,10 +80,6 @@ export default function ProfilePage() {
 
     fetchProfile();
   }, []);
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
 
   // Handlers for the personal information fields
   const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -80,7 +80,6 @@ export default function Home() {
       if (!text_response.ok) throw new Error("Failed to fetch");
 
       const resume_text = await text_response.text();
-      console.log("Generated Resume Text:", resume_text);
 
       if (!resume_text) {
         console.error("resume_text is undefined!");
@@ -97,11 +96,8 @@ export default function Home() {
 
       if (!pdf_response.ok) throw new Error("Failed to fetch");
 
-      console.log("Generated Resume PDF:", pdf_response);
-      console.log("Response Headers:", pdf_response.headers);
       const pdfBlob = await pdf_response.blob();
       const pdfObjectUrl = URL.createObjectURL(pdfBlob);
-      console.log(pdfObjectUrl);
       setPdfUrl(pdfObjectUrl);
     } catch (error) {
       console.error("Error:", error);
