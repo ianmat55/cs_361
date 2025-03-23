@@ -9,14 +9,14 @@ export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
   const { data: session, status } = useSession();
   const [profileData, setProfileData] = useState(null);
-  const [jobUrl, setJobUrl] = useState(""); // Store job URL input
+  const [jobUrl, setJobUrl] = useState("");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!session?.user?.email) return;
 
-      console.log(session);
       try {
         const response = await fetch("/api/profile", {
           method: "GET",
@@ -39,6 +39,14 @@ export default function Home() {
     }
   }, [session, status]);
 
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
+
   const handleGenerate = async () => {
     if (status === "loading") return;
 
@@ -58,19 +66,43 @@ export default function Home() {
     }
 
     try {
-      console.log(jobUrl);
-      const response = await fetch("http://localhost:1709/generate-resume", {
+      const text_response = await fetch(
+        "http://localhost:1709/generate-resume",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ jobUrl: jobUrl, userId: session.user }),
+        }
+      );
+
+      if (!text_response.ok) throw new Error("Failed to fetch");
+
+      const resume_text = await text_response.text();
+      console.log("Generated Resume Text:", resume_text);
+
+      if (!resume_text) {
+        console.error("resume_text is undefined!");
+        return;
+      }
+
+      const pdf_response = await fetch("http://localhost:7777/generate-pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ jobUrl: jobUrl, userId: 1 }),
+        body: JSON.stringify({ text: resume_text }),
       });
 
-      if (!response.ok) throw new Error("Failed to fetch");
+      if (!pdf_response.ok) throw new Error("Failed to fetch");
 
-      const result = await response.json();
-      console.log("Generated Resume:", result);
+      console.log("Generated Resume PDF:", pdf_response);
+      console.log("Response Headers:", pdf_response.headers);
+      const pdfBlob = await pdf_response.blob();
+      const pdfObjectUrl = URL.createObjectURL(pdfBlob);
+      console.log(pdfObjectUrl);
+      setPdfUrl(pdfObjectUrl);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -105,6 +137,29 @@ export default function Home() {
               Generate
             </button>
           </div>
+
+          {pdfUrl && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Generated Resume
+              </h2>
+
+              <iframe
+                src={pdfUrl}
+                width="100%"
+                height="500px"
+                className="mt-4 border rounded-lg shadow-md"
+              ></iframe>
+
+              <a
+                href={pdfUrl}
+                download="resume.pdf"
+                className="mt-4 inline-block bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+              >
+                Download PDF
+              </a>
+            </div>
+          )}
 
           <button
             onClick={() => setShowInfo(!showInfo)}

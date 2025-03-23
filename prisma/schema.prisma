@@ -10,8 +10,8 @@ datasource db {
 }
 
 model user_education {
-  edu_id         Int       @id @default(autoincrement())
-  user_id        Int?        
+  edu_id         String    @id @default(uuid()) @db.Uuid
+  user_id        String    @db.Uuid
   institution    String?
   degree         String?
   field_of_study String?
@@ -21,12 +21,12 @@ model user_education {
   embedding      Unsupported("vector")
   created_at     DateTime? @default(now()) @db.Timestamp(6)
   updated_at     DateTime? @default(now()) @db.Timestamp(6)
-  users          users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users          users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model user_experiences {
-  exp_id           Int       @id @default(autoincrement())
-  user_id          Int?
+  exp_id           String    @id @default(uuid()) @db.Uuid
+  user_id          String    @db.Uuid
   role             String
   company          String?
   start_date       DateTime? @db.Date
@@ -35,53 +35,53 @@ model user_experiences {
   embedding        Unsupported("vector")
   created_at       DateTime? @default(now()) @db.Timestamp(6)
   updated_at       DateTime? @default(now()) @db.Timestamp(6)
-  users            users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model user_projects {
-  project_id   Int       @id @default(autoincrement())
-  user_id      Int?
+  project_id   String    @id @default(uuid()) @db.Uuid
+  user_id      String    @db.Uuid
   project_name String
   description  String?
   tech_stack   String?
   embedding    Unsupported("vector") 
   created_at   DateTime? @default(now()) @db.Timestamp(6)
   updated_at   DateTime? @default(now()) @db.Timestamp(6)
-  users        users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users        users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model user_resumes {
-  resume_id       Int       @id @default(autoincrement())
-  user_id         Int?
+  resume_id       String    @id @default(uuid()) @db.Uuid
+  user_id         String    @db.Uuid
   job_description String?
   file_url        String
   created_at      DateTime? @default(now()) @db.Timestamp(6)
-  users           users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users           users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model user_skills {
-  skill_id          Int       @id @default(autoincrement())
-  user_id           Int?
+  skill_id          String    @id @default(uuid()) @db.Uuid
+  user_id           String    @db.Uuid
   skill_name        String
   years_exp         Int?      @default(0)
   example           String?
   embedding         Unsupported("vector")
   created_at        DateTime? @default(now()) @db.Timestamp(6)
-  users             users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users             users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model user_usage {
-  usage_id           Int       @id @default(autoincrement())
-  user_id            Int?
+  usage_id           String    @id @default(uuid()) @db.Uuid
+  user_id            String    @db.Uuid
   usage_date         DateTime? @default(now()) @db.Timestamp(6)
   resume_generations Int?      @default(0)
   tokens_used        Int?      @default(0)
   notes              String?
-  users              users?    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users              users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 }
 
 model users {
-  user_id          Int                @id @default(autoincrement())
+  user_id          String             @id @default(uuid()) @db.Uuid
   email            String             @unique @db.VarChar(255)
   full_name        String?            @db.VarChar(255)
   location         String?
@@ -95,4 +95,3 @@ model users {
   user_skills      user_skills[]
   user_usage       user_usage[]
 }
-

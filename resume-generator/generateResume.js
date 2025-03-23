@@ -5,7 +5,6 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import pgvector from "pgvector";
 import OpenAI from "openai";
-// import { createPdfResume } from "./createPdf.js";
 
 dotenv.config();
 const app = express();
@@ -68,7 +67,7 @@ async function generateResumeText(
   jobDescription,
   skills,
   experiences,
-  projects,
+  projects
 ) {
   const skillsText = skills
     .map((s) => `${s.skill_name} (${s.years_exp} years) - ${s.example}`)
@@ -78,8 +77,7 @@ async function generateResumeText(
     .join("\n");
   const projectText = projects
     .map(
-      (p) =>
-        `${p.project_name}: ${p.description} [Tech Stack: ${p.tech_stack}]`,
+      (p) => `${p.project_name}: ${p.description} [Tech Stack: ${p.tech_stack}]`
     )
     .join("\n");
 
@@ -137,10 +135,17 @@ app.post("/generate-resume", async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ job_url: jobUrl }),
-      },
+      }
     );
 
+    if (!response.ok) {
+      throw new Error(
+        `Request failed with status ${response.status}: ${response.statusText}`
+      );
+    }
+
     const jobDescription = await response.json();
+    console.log(jobDescription);
 
     if (!jobDescription)
       return res.status(500).json({ error: "Failed to scrape job" });
@@ -148,7 +153,7 @@ app.post("/generate-resume", async (req, res) => {
     console.log("Retrieving relevant user data...");
     const { skills, experiences, projects } = await getUserData(
       userId,
-      jobDescription,
+      jobDescription
     );
     if (!skills.length && !experiences.length && !projects.length) {
       return res.status(404).json({ error: "No matching data found" });
@@ -159,17 +164,13 @@ app.post("/generate-resume", async (req, res) => {
       jobDescription,
       skills,
       experiences,
-      projects,
+      projects
     );
 
-    // console.log("Creating PDF...");
-    // const pdfBuffer = await createPdfResume(resumeText);
     console.log(resumeText);
 
-    res.setHeader("Content-Type", "application/pdf");
-    // res.send(pdfBuffer);
+    res.setHeader("Content-Type", "text/plain");
     res.send(resumeText);
-    console.log("SENT");
   } catch (error) {
     console.error("Server Error:", error);
     res.status(500).json({ error: "Internal Server Error" });

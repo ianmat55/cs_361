@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import LinkedInProvider from "next-auth/providers/linkedin";
 import { NextAuthOptions } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 
@@ -23,41 +22,26 @@ const authOptions: NextAuthOptions = {
         },
       },
     }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID!,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
-      authorization: { params: { scope: "r_liteprofile r_emailaddress" } },
-    }),
   ],
   pages: {
     signIn: "/login",
   },
   callbacks: {
     async signIn({ user }) {
-      if (!user.email) return false; // Ensure email exists
+      if (!user.email) return false;
 
       try {
-        const existingUser = await prisma.users.findUnique({
+        await prisma.users.upsert({
           where: { email: user.email },
+          update: {
+            full_name: user.name,
+            updated_at: new Date(),
+          },
+          create: {
+            email: user.email,
+            full_name: user.name,
+          },
         });
-
-        if (existingUser) {
-          // Only update if `full_name` has changed
-          if (existingUser.full_name !== user.name) {
-            await prisma.users.update({
-              where: { email: user.email },
-              data: { full_name: user.name, updated_at: new Date() },
-            });
-          }
-        } else {
-          // Create a new user if they don’t exist
-          await prisma.users.create({
-            data: {
-              email: user.email,
-              full_name: user.name,
-            },
-          });
-        }
       } catch (error) {
         console.error("Database error:", error);
         return false;
@@ -66,23 +50,27 @@ const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async session({ session, user }) {
-      if (user) {
-        session.user = {
-          id: user.id as string,
-          email: user.email as string,
-          name: user.name as string,
-        };
-        session.user.id = user.id;
-      }
-      return session;
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub,
+        },
+      };
     },
 
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id; // Ensure user ID is saved
-        token.email = user.email;
-        token.name = user.name;
+      if (user?.email) {
+        const dbUser = await prisma.users.findUnique({
+          where: { email: user.email },
+        });
+
+        if (dbUser) {
+          token.sub = dbUser.user_id.toString();
+          token.email = dbUser.email ?? undefined;
+          token.name = dbUser.full_name ?? undefined;
+        }
       }
       return token;
     },

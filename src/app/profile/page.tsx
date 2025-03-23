@@ -95,7 +95,7 @@ export default function ProfilePage() {
   // Handler functions for dynamic fields (skills, job experiences, projects, education)
   const handleSkillChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newSkills = [...skills];
     newSkills[index] = { ...newSkills[index], [e.target.name]: e.target.value };
@@ -104,7 +104,7 @@ export default function ProfilePage() {
 
   const handleJobChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newJobs = [...jobExperiences];
     newJobs[index] = { ...newJobs[index], [e.target.name]: e.target.value };
@@ -113,7 +113,7 @@ export default function ProfilePage() {
 
   const handleProjectChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newProjects = [...projects];
     newProjects[index] = {
@@ -125,7 +125,7 @@ export default function ProfilePage() {
 
   const handleEducationChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newEducations = [...educationEntries];
     newEducations[index] = {
@@ -183,7 +183,6 @@ export default function ProfilePage() {
       body: JSON.stringify(profileData),
     });
 
-    console.log(response);
     if (response.ok) {
       router.refresh();
       setIsEditing(false);
