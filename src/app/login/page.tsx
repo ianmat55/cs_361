@@ -1,33 +1,93 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   useEffect(() => {
-    if (status == "authenticated" && session) {
+    if (status === "authenticated") {
       router.push("/");
     }
-  }, [session, status, router]);
+  }, [status, router]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (res?.ok) {
+      router.push("/");
+    } else {
+      alert("Invalid email or password");
+    }
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Login</h1>
-        <p className="text-gray-600 mb-6">
-          This app requires a Gmail account to work
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          Log in to JobFit AI
+        </h1>
+
+        {/* Email/Password Login */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-sm mt-4 text-center text-gray-600">
+          Don&apos;t have an account?{" "}
+          <a href="/register" className="text-blue-500 hover:underline">
+            Register here
+          </a>
         </p>
+
+        {/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-grow h-px bg-gray-300" />
+          <span className="px-4 text-sm text-gray-500">OR</span>
+          <div className="flex-grow h-px bg-gray-300" />
+        </div>
+
+        {/* Google Login */}
         <button
           onClick={() => signIn("google")}
-          className="bg-red-500 text-white px-4 py-2 rounded-lg w-full mb-2 hover:bg-red-600"
+          className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
         >
           Sign in with Google
         </button>

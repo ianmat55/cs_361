@@ -89,6 +89,7 @@ CREATE TABLE "users" (
     "user_id" UUID NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "full_name" VARCHAR(255),
+    "hashedPassword" TEXT,
     "location" TEXT,
     "bio" TEXT,
     "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
