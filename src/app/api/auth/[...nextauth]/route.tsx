@@ -34,7 +34,6 @@ const authOptions: NextAuthOptions = {
         return {
           id: user.user_id,
           email: user.email,
-          name: user.full_name ?? undefined,
         };
       },
     }),
@@ -57,30 +56,39 @@ const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async signIn({ user }) {
-      if (!user.email) return false;
+    async signIn({ user, account }) {
+      if (!user.email || !account) return false;
+      if (account?.provider === "google") {
+        try {
+          const existingUser = await prisma.users.findUnique({
+            where: { email: user.email! },
+          });
 
-      try {
-        await prisma.users.upsert({
-          where: { email: user.email },
-          update: {
-            full_name: user.name ?? undefined,
-            updated_at: new Date(),
-          },
-          create: {
-            email: user.email,
-            full_name: user.name ?? undefined,
-          },
-        });
-      } catch (error) {
-        console.error("Database error:", error);
-        return false;
+          if (existingUser && !existingUser.google_id) {
+            await prisma.users.update({
+              where: { email: user.email! },
+              data: { google_id: account.providerAccountId },
+            });
+          } else if (!existingUser) {
+            await prisma.users.create({
+              data: {
+                email: user.email,
+                full_name: user.name,
+                google_id: account.providerAccountId,
+              },
+            });
+          }
+        } catch (error) {
+          console.error("Database error:", error);
+          return false;
+        }
       }
 
       return true;
     },
 
     async jwt({ token, user }) {
+      console.log(`jwk user: ${user}`);
       if (user?.email) {
         const dbUser = await prisma.users.findUnique({
           where: { email: user.email },
@@ -88,8 +96,8 @@ const authOptions: NextAuthOptions = {
 
         if (dbUser) {
           token.sub = dbUser.user_id;
-          token.email = dbUser.email ?? undefined;
-          token.name = dbUser.full_name ?? undefined;
+          token.email = dbUser.email;
+          token.name = dbUser.full_name;
         }
       }
       return token;

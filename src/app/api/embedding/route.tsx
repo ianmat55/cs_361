@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { text, type } = body;
+  const { text } = body;
 
   try {
     // Generate embedding using OpenAI
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     console.error("Embedding Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
