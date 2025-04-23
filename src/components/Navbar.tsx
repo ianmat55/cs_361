@@ -15,71 +15,60 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-sm border-b border-dotted border-gray-200">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-gray-900">
+          <Link
+            href="/"
+            className="text-2xl font-bold text-gray-900 tracking-tight"
+          >
             JobFit AI
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
-              className={`px-4 py-2 rounded-lg ${
+              className={`text-sm px-4 py-2 rounded-lg transition ${
                 pathname === "/"
                   ? "text-blue-600 font-semibold"
-                  : "text-gray-700 hover:text-blue-500"
+                  : "text-gray-700 hover:text-blue-600"
               }`}
             >
               Home
             </Link>
             <Link
               href="/profile"
-              className={`px-4 py-2 rounded-lg ${
+              className={`text-sm px-4 py-2 rounded-lg transition ${
                 pathname === "/profile"
                   ? "text-blue-600 font-semibold"
-                  : "text-gray-700 hover:text-blue-500"
+                  : "text-gray-700 hover:text-blue-600"
               }`}
             >
               Profile
             </Link>
-            <Link
-              href="/history"
-              className={`px-4 py-2 rounded-lg ${
-                pathname === "/history"
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-700 hover:text-blue-500"
-              }`}
-            >
-              History
-            </Link>
-          </div>
-
-          {/* Auth Buttons */}
-          {session ? (
-            <div className="hidden md:flex items-center space-x-4">
+            {session ? (
               <button
                 onClick={() => signOut()}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                className="text-sm bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
                 Logout
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => signIn()}
-              className="hidden md:block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            >
-              Login
-            </button>
-          )}
+            ) : (
+              <button
+                onClick={() => signIn()}
+                className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Login
+              </button>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden focus:outline-none"
+            className="md:hidden text-gray-700 focus:outline-none text-xl"
           >
             ☰
           </button>
@@ -88,33 +77,33 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden flex flex-col items-center bg-white shadow-md">
+        <div className="md:hidden flex flex-col items-center bg-white shadow-sm border-t border-gray-100">
           <Link
             href="/"
-            className={`px-4 py-2 rounded-lg ${
+            className={`w-full text-center py-2 ${
               pathname === "/"
                 ? "text-blue-600 font-semibold"
-                : "text-gray-700 hover:text-blue-500"
+                : "text-gray-700 hover:text-blue-600"
             }`}
           >
             Home
           </Link>
           <Link
             href="/profile"
-            className={`px-4 py-2 rounded-lg ${
+            className={`w-full text-center py-2 ${
               pathname === "/profile"
                 ? "text-blue-600 font-semibold"
-                : "text-gray-700 hover:text-blue-500"
+                : "text-gray-700 hover:text-blue-600"
             }`}
           >
             Profile
           </Link>
           <Link
             href="/history"
-            className={`px-4 py-2 rounded-lg ${
+            className={`w-full text-center py-2 ${
               pathname === "/history"
                 ? "text-blue-600 font-semibold"
-                : "text-gray-700 hover:text-blue-500"
+                : "text-gray-700 hover:text-blue-600"
             }`}
           >
             History
@@ -122,14 +111,14 @@ export default function Navbar() {
           {session ? (
             <button
               onClick={() => signOut()}
-              className="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 my-2"
+              className="w-full text-center py-2 text-sm bg-red-500 text-white hover:bg-red-600 my-2 rounded-lg"
             >
               Logout
             </button>
           ) : (
             <button
               onClick={() => signIn()}
-              className="block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 my-2"
+              className="w-full text-center py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 my-2 rounded-lg"
             >
               Login
             </button>
