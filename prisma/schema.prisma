@@ -5,95 +5,113 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
   extensions = [pgvector(map: "vector", schema: "public")]
 }
 
-model user_education {
-  edu_id         String    @id @default(uuid()) @db.Uuid
-  user_id        String    @db.Uuid
-  institution    String?
-  degree         String?
-  field_of_study String?
-  start_date     DateTime? @db.Date
-  end_date       DateTime? @db.Date
-  gpa            String?
-  embedding      Unsupported("vector")
-  created_at     DateTime? @default(now()) @db.Timestamp(6)
-  updated_at     DateTime? @default(now()) @db.Timestamp(6)
-  users          users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+enum FeatureType {
+  EXPERIENCE,
+  PROJECT,
+  SKILL,
+  EDUCATION
 }
 
-model user_experiences {
-  exp_id           String    @id @default(uuid()) @db.Uuid
-  user_id          String    @db.Uuid
+model Profile {
+  id                String            @id @default(uuid()) @map("user_id")
+  email             String            @unique
+  googleId          String?           @unique @map("google_id")
+  fullName          String            @map("full_name")
+  password          String?
+  location          String?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  education         Education[]
+  experiences       Experience[]
+  projects          Project[]
+  skills            Skill[]
+  resumes           Resume[]
+  Usage             Usage[]
+}
+
+model Education {
+  id             String        @id @default(uuid()) @map("edu_id")
+  userId         String        @map("user_id")         
+  institution    String
+  degree         String
+  field          String
+  startDate      DateTime?     @map("start_date")
+  endDate        DateTime?     @map("end_date")
+  gpa            Float?
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  user           Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id               String     @id @default(uuid()) @map("exp_id")
+  userId           String     @map("user_id")  
   role             String
-  company          String?
-  start_date       DateTime? @db.Date
-  end_date         DateTime? @db.Date
-  responsibilities String?
-  embedding        Unsupported("vector")
-  created_at       DateTime? @default(now()) @db.Timestamp(6)
-  updated_at       DateTime? @default(now()) @db.Timestamp(6)
-  users            users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  company          String
+  startDate        DateTime   @map("start_date")
+  endDate          DateTime?  @map("end_date")
+  responsibilities String     @db.Text
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  user             Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model user_projects {
-  project_id   String    @id @default(uuid()) @db.Uuid
-  user_id      String    @db.Uuid
-  project_name String
-  description  String?
-  tech_stack   String?
-  embedding    Unsupported("vector") 
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
-  updated_at   DateTime? @default(now()) @db.Timestamp(6)
-  users        users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+model Project {
+  id            String      @id @default(uuid()) @map("project_id")
+  userId        String      @map("user_id")  
+  projectName   String      @map("project_name")
+  description   String      @db.Text
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  user          Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model user_resumes {
-  resume_id       String    @id @default(uuid()) @db.Uuid
-  user_id         String    @db.Uuid
-  job_description String?
-  file_url        String
-  created_at      DateTime? @default(now()) @db.Timestamp(6)
-  users           users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+model Resume {
+  fprint          String     @id @map("resume_id")
+  userId          String     @map("user_id")  
+  title           String     
+  chunkIds        Int[]      @db.IntArray @map("chunk_ids")
+  fileUrl         String     @map("file_url")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  user            Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId])
 }
 
-model user_skills {
-  skill_id          String    @id @default(uuid()) @db.Uuid
-  user_id           String    @db.Uuid
-  skill_name        String
-  years_exp         Int?      @default(0)
-  example           String?
-  embedding         Unsupported("vector")
-  created_at        DateTime? @default(now()) @db.Timestamp(6)
-  users             users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+model Skill {
+  id                String       @id @default(uuid()) @map("skill_id")
+  userId            String       @map("user_id")  
+  skillName         String       @map("skill_name")
+  yearsExp          Int          @default(0) @map("years_exp")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  user              Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model user_usage {
-  usage_id           String    @id @default(uuid()) @db.Uuid
-  user_id            String    @db.Uuid
-  usage_date         DateTime? @default(now()) @db.Timestamp(6)
-  resume_generations Int?      @default(0)
-  tokens_used        Int?      @default(0)
-  notes              String?
-  users              users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+model Usage {
+  id                 String     @id @default(uuid()) @map("usage_id")
+  userId             String     @map("user_id")  
+  usageDate          DateTime   @default(now()) @map("usage_date")
+  resumeGenerations  Int?       @default(0) @map("resume_generations")
+  tokensUsed         Int?       @default(0) @map("tokens_used")
+  user               Profile    @relation(fields: [UserId], references: [id], onDelete: Cascade)
 }
 
-model users {
-  user_id          String             @id @default(uuid()) @db.Uuid
-  email            String             @unique @db.VarChar(255)
-  google_id        String?            @unique @db.VarChar(255)
-  full_name        String?            @db.VarChar(255)
-  hashedPassword   String?
-  location         String?
-  bio              String?
-  created_at       DateTime?          @default(now()) @db.Timestamp(6)
-  updated_at       DateTime?          @default(now()) @db.Timestamp(6)
-  user_education   user_education[]
-  user_experiences user_experiences[]
-  user_projects    user_projects[]
-  user_resumes     user_resumes[]
-  user_skills      user_skills[]
-  user_usage       user_usage[]
+model Embeddings {
+  id            String                  @id @default(uuid()) @map("embedding_id")
+  userId        String                  @map("user_id")  
+  featureType   FeatureType             @map("feature_type")
+  content       String
+  embedding     Unsupported("vector")
+  createdAt     DateTime                @default(now()) @map("created_at")
+  updatedAt     DateTime                @updatedAt @map("updated_at")
+  sourceId      String                  @map("source_id")
+  user          Profile                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([featureType, sourceId])
 }
