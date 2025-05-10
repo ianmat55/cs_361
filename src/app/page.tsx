@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
   const { data: session, status } = useSession();
-  const [profileData, setProfileData] = useState(null);
+  // const [profileData, setProfileData] = useState(null);
   const [jobUrl, setJobUrl] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const router = useRouter();
@@ -55,10 +55,10 @@ export default function Home() {
       return;
     }
 
-    if (!profileData) {
-      router.push("/profile");
-      return;
-    }
+    // if (!profileData) {
+    //   router.push("/profile");
+    //   return;
+    // }
 
     if (!jobUrl) {
       alert("Please enter a job URL.");
@@ -114,11 +114,10 @@ export default function Home() {
       <main className="flex flex-col justify-center items-center min-h-screen bg-gray-50 px-4 pt-12">
         <section id="hero" className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Tailor your Resume to the Job
+            Quality First Personalization
           </h1>
           <p className="text-gray-600 text-lg max-w-md mx-auto mb-6">
-            JobFit AI generates a customized resume from your job posting in
-            seconds.
+            Generate a customized resume from your job posting in seconds.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 bg-white p-4 rounded-lg shadow-md border border-gray-200">
