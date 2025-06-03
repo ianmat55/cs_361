@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:start": "docker run --rm --name local-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=mydb -p 5433:5432 -v pgdata:/var/lib/postgresql/data -d ankane/pgvector",
+    "db:init": "docker run --name local-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=mydb -p 5433:5432 -v pgdata:/var/lib/postgresql/data -d ankane/pgvector",
+    "db:start": "docker start local-postgres",
     "db:stop": "docker stop local-postgres",
-    "db:status": "docker ps | grep local-postgres || echo 'Postgres is not running.'"
+    "db:status": "docker ps | grep local-postgres || echo 'Postgres is not running.'",
+    "db:connect": "psql -h localhost -p 5433 -U postgres -d mydb",
+    "db:push:dev": "npx dotenv -e .env.dev -- npx prisma db push",
+    "db:push": "npx prisma db push && npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
@@ -35,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "dotenv-cli": "^8.0.0",
     "env-cmd": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.1",

@@ -10,9 +10,9 @@ datasource db {
 }
 
 enum FeatureType {
-  EXPERIENCE,
-  PROJECT,
-  SKILL,
+  EXPERIENCE
+  PROJECT
+  SKILL
   EDUCATION
 }
 
@@ -31,6 +31,7 @@ model Profile {
   skills            Skill[]
   resumes           Resume[]
   Usage             Usage[]
+  Embeddings        Embeddings[]
 }
 
 model Education {
@@ -42,8 +43,6 @@ model Education {
   startDate      DateTime?     @map("start_date")
   endDate        DateTime?     @map("end_date")
   gpa            Float?
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
   user           Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -55,8 +54,6 @@ model Experience {
   startDate        DateTime   @map("start_date")
   endDate          DateTime?  @map("end_date")
   responsibilities String     @db.Text
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
   user             Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -65,19 +62,17 @@ model Project {
   userId        String      @map("user_id")  
   projectName   String      @map("project_name")
   description   String      @db.Text
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
   user          Profile     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Resume {
-  fprint          String     @id @map("resume_id")
+  id              String     @id @default(uuid()) @map("resume_id")
   userId          String     @map("user_id")  
   title           String     
-  chunkIds        Int[]      @db.IntArray @map("chunk_ids")
   fileUrl         String     @map("file_url")
+  parsed          Boolean    @default(false)
+  pages           Int
   createdAt       DateTime   @default(now()) @map("created_at")
-  updatedAt       DateTime   @updatedAt @map("updated_at")
   user            Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
@@ -89,8 +84,6 @@ model Skill {
   userId            String       @map("user_id")  
   skillName         String       @map("skill_name")
   yearsExp          Int          @default(0) @map("years_exp")
-  createdAt         DateTime     @default(now()) @map("created_at")
-  updatedAt         DateTime     @updatedAt @map("updated_at")
   user              Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -100,18 +93,17 @@ model Usage {
   usageDate          DateTime   @default(now()) @map("usage_date")
   resumeGenerations  Int?       @default(0) @map("resume_generations")
   tokensUsed         Int?       @default(0) @map("tokens_used")
-  user               Profile    @relation(fields: [UserId], references: [id], onDelete: Cascade)
+  user               Profile    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Embeddings {
   id            String                  @id @default(uuid()) @map("embedding_id")
   userId        String                  @map("user_id")  
   featureType   FeatureType             @map("feature_type")
-  content       String
   embedding     Unsupported("vector")
   createdAt     DateTime                @default(now()) @map("created_at")
-  updatedAt     DateTime                @updatedAt @map("updated_at")
-  sourceId      String                  @map("source_id")
+  sourceId      String                  @map("source_id") // resumeUploadId or experienceId
+  ordinal       Int                     
   user          Profile                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([featureType, sourceId])
+  @@unique([featureType, sourceId, ordinal])
 }
