@@ -19,12 +19,13 @@ const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
 
-        if (!user?.hashedPassword) return null;
+        if (!user?.password) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
-          user.hashedPassword
+          user.password
         );
+
         if (!isValid) return null;
 
         return {
@@ -65,7 +66,7 @@ const authOptions: NextAuthOptions = {
           });
 
           if (existingUser && !existingUser.google_id) {
-            await prisma.profiles.update({
+            await prisma.profile.update({
               where: { email: user.email! },
               data: { google_id: account.providerAccountId },
             });
@@ -79,7 +80,6 @@ const authOptions: NextAuthOptions = {
             });
           }
         } catch (error) {
-          console.error("Database error:", error);
           return false;
         }
       }
