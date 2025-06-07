@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   try {
     // Ensure the user exists
-    const user = await prisma.users.upsert({
+    const user = await prisma.profile.upsert({
       where: { email: userEmail },
       update: {
         ...(body.personalInfo?.fullName && {
@@ -191,7 +191,7 @@ export async function GET() {
   const userEmail = session.user.email;
 
   try {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.profile.findUnique({
       where: { email: userEmail },
       include: {
         user_skills: true,
@@ -263,7 +263,7 @@ export async function DELETE() {
   const userEmail = session.user.email;
 
   try {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.profile.findUnique({
       where: { email: userEmail },
     });
 
@@ -276,7 +276,7 @@ export async function DELETE() {
       prisma.user_experiences.deleteMany({ where: { user_id: user.user_id } }),
       prisma.user_projects.deleteMany({ where: { user_id: user.user_id } }),
       prisma.user_education.deleteMany({ where: { user_id: user.user_id } }),
-      prisma.users.delete({ where: { user_id: user.user_id } }),
+      prisma.profile.delete({ where: { user_id: user.user_id } }),
     ]);
 
     return NextResponse.json(

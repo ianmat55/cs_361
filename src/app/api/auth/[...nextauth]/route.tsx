@@ -2,11 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+import { prisma } from "@/lib/prisma.ts"
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -19,7 +15,7 @@ const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.users.findUnique({
+        const user = await prisma.profile.findUnique({
           where: { email: credentials.email },
         });
 
@@ -55,22 +51,26 @@ const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+  jwt: {
+    encryption: true,
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async signIn({ user, account }) {
       if (!user.email || !account) return false;
       if (account?.provider === "google") {
         try {
-          const existingUser = await prisma.users.findUnique({
+          const existingUser = await prisma.profile.findUnique({
             where: { email: user.email! },
           });
 
           if (existingUser && !existingUser.google_id) {
-            await prisma.users.update({
+            await prisma.profiles.update({
               where: { email: user.email! },
               data: { google_id: account.providerAccountId },
             });
           } else if (!existingUser) {
-            await prisma.users.create({
+            await prisma.profile.create({
               data: {
                 email: user.email,
                 full_name: user.name,
@@ -88,9 +88,8 @@ const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      console.log(`jwk user: ${user}`);
       if (user?.email) {
-        const dbUser = await prisma.users.findUnique({
+        const dbUser = await prisma.profile.findUnique({
           where: { email: user.email },
         });
 
