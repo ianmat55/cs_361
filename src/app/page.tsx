@@ -6,9 +6,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Zap, Users, Star, ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle, Target, Zap, Upload, Search, Sparkles } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
 export default function Home() {
@@ -44,6 +45,48 @@ export default function Home() {
   //     fetchProfile();
   //   }
   // }, [session, status]);
+
+  const features = [
+    {
+      icon: Target,
+      title: "Smart Resume Matching",
+      description:
+        "Our AI analyzes your resume against thousands of job postings to find perfect matches based on skills, experience, and requirements.",
+      badge: "Core Feature",
+    },
+    {
+      icon: Zap,
+      title: "Automated Applications",
+      description:
+        "Apply to multiple relevant positions automatically with personalized cover letters and optimized submissions.",
+      badge: "Core Feature",
+    },
+    {
+      icon: Sparkles,
+      title: "AI Resume Tailoring",
+      description:
+        "Upgrade to generate custom resume versions for specific roles, maximizing your match score and interview chances.",
+      badge: "Premium Add-on",
+    },
+  ]
+
+  const steps = [
+    {
+      step: "01",
+      title: "Upload Your Resume",
+      description: "Upload your resume and let our AI understand your skills, experience, and career goals.",
+    },
+    {
+      step: "02",
+      title: "Discover Perfect Matches",
+      description: "Our semantic matching engine finds jobs that align with your profile across multiple job boards.",
+    },
+    {
+      step: "03",
+      title: "Apply Automatically",
+      description: "Review matches and apply automatically with personalized applications and cover letters.",
+    },
+  ]
 
   useEffect(() => {
     return () => {
@@ -110,377 +153,228 @@ export default function Home() {
     }
   };
 
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <Head className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">JobFit AI</h1>
-            </div>
-            <nav className="flex items-center space-x-8">
-              <Link href="#" className="text-gray-700 hover:text-gray-900">
-                Home
-              </Link>
-              <Link href="#" className="text-gray-700 hover:text-gray-900">
-                Profile
-              </Link>
-              <Button className="bg-blue-600 hover:bg-blue-700">Login</Button>
-            </nav>
-          </div>
-        </div>
-      </Head>
-
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Quality First Personalization
-          </h2>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Generate a customized resume from your job posting in seconds.
-          </p>
+      <section className="relative overflow-hidden py-20 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <Badge variant="outline" className="mb-4">
+              🎯 AI-Powered Job Matching
+            </Badge>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+              Stop Job Hunting. Start <span className="text-primary">Job Matching</span>
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">
+              Upload your resume once and let our AI find and apply to perfect job matches automatically. Semantic
+              matching technology discovers opportunities you'd never find manually.
+            </p>
 
-          <div className="max-w-md mx-auto mb-8">
-            <div className="flex gap-2">
-              <Input
-                type="url"
-                placeholder="Paste job post URL..."
-                className="flex-1 h-12 text-base"
-              />
-              <Button className="bg-blue-600 hover:bg-blue-700 h-12 px-6">
-                Generate
+            {/* Upload Resume CTA */}
+            <div className="mt-10 mx-auto max-w-md">
+              <div className="relative">
+                <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5 p-8 transition-colors hover:border-primary/40 hover:bg-primary/10">
+                  <Upload className="h-12 w-12 text-primary mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Upload Your Resume</h3>
+                  <p className="text-sm text-muted-foreground mb-4 text-center">PDF Max 5MB</p>
+                  <Button size="lg" className="text-base">
+                    Choose File & Get Started
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex items-center justify-center gap-x-8 text-sm text-muted-foreground">
+              <div className="flex items-center gap-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Free to start</span>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Instant matching</span>
+              </div>
+              <div className="flex items-center gap-x-2">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                <span>Privacy protected</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-x-6">
+              <Button variant="outline" size="lg" className="text-base">
+                View Demo
+              </Button>
+              <Button variant="ghost" size="lg" className="text-base">
+                See How It Works
               </Button>
             </div>
           </div>
-
-          <Link
-            href="#how-it-works"
-            className="text-blue-600 hover:text-blue-700 font-medium"
-          >
-            How to Use
-          </Link>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4">
-              Why Choose JobFit AI
-            </Badge>
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Land Your Dream Job Faster
-            </h3>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Our AI-powered platform creates perfectly tailored resumes that
-              match job requirements and pass ATS systems.
-            </p>
-          </div>
+      {/* Job Search Section */}
+      <section className="py-16 sm:py-20 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Or explore what's out there</h2>
+            <p className="mt-4 text-muted-foreground">See how our semantic matching works by searching for any role</p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Zap className="w-6 h-6 text-blue-600" />
+            {/* Search Bar */}
+            <div className="mt-8 mx-auto max-w-2xl">
+              <div className="relative">
+                <div className="flex rounded-full border border-input bg-background shadow-md hover:shadow-lg transition-shadow duration-200">
+                  <div className="flex items-center pl-4">
+                    <Search className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <Input
+                    type="text"
+                    placeholder="Try 'Senior React Developer' or 'Product Manager at startup'..."
+                    className="flex-1 border-0 bg-transparent px-4 py-3 text-base placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                  <Button className="m-1 rounded-full px-6">Search Jobs</Button>
                 </div>
-                <h4 className="text-xl font-semibold mb-3">Lightning Fast</h4>
-                <p className="text-gray-600">
-                  Generate a customized resume in under 30 seconds. No more
-                  hours of manual editing.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-                <h4 className="text-xl font-semibold mb-3">ATS Optimized</h4>
-                <p className="text-gray-600">
-                  Our AI ensures your resume passes Applicant Tracking Systems
-                  and reaches human recruiters.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8 text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-6 h-6 text-purple-600" />
-                </div>
-                <h4 className="text-xl font-semibold mb-3">
-                  Recruiter Approved
-                </h4>
-                <p className="text-gray-600">
-                  Formats and keywords that hiring managers actually want to see
-                  in your application.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4">
-              Simple Process
-            </Badge>
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              How JobFit AI Works
-            </h3>
-            <p className="text-xl text-gray-600">
-              Three simple steps to your perfect resume
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
-                1
               </div>
-              <h4 className="text-xl font-semibold mb-3">Paste Job URL</h4>
-              <p className="text-gray-600">
-                Simply copy and paste the job posting URL from any job board or
-                company website.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
-                2
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
+                <span>Popular searches:</span>
+                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                  "Remote Software Engineer"
+                </Button>
+                <span>•</span>
+                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                  "Data Scientist NYC"
+                </Button>
+                <span>•</span>
+                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                  "Marketing Manager"
+                </Button>
               </div>
-              <h4 className="text-xl font-semibold mb-3">AI Analysis</h4>
-              <p className="text-gray-600">
-                Our AI analyzes the job requirements and matches them with your
-                existing experience.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
-                3
-              </div>
-              <h4 className="text-xl font-semibold mb-3">Download Resume</h4>
-              <p className="text-gray-600">
-                Get your perfectly tailored resume ready to submit and increase
-                your chances of getting hired.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                />
-              ))}
-              <span className="text-gray-600 ml-2">
-                4.9/5 from 2,000+ users
-              </span>
+      {/* Stats Section */}
+      {/*
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl lg:max-w-none">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Trusted by job seekers worldwide</h2>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Join thousands of professionals who've automated their job search with ResuMatch
+              </p>
             </div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-8">
-              Trusted by Job Seekers Worldwide
-            </h3>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4">
-                  "JobFit AI helped me land 3 interviews in my first week. The
-                  customization is incredible!"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                  <div>
-                    <p className="font-semibold">Sarah Chen</p>
-                    <p className="text-sm text-gray-500">Software Engineer</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4">
-                  "Finally, a tool that understands what recruiters want. Got my
-                  dream job in 2 weeks!"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                  <div>
-                    <p className="font-semibold">Marcus Johnson</p>
-                    <p className="text-sm text-gray-500">Marketing Manager</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4">
-                  "The AI perfectly matched my skills to job requirements. 10x
-                  better than generic templates."
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                  <div>
-                    <p className="font-semibold">Emily Rodriguez</p>
-                    <p className="text-sm text-gray-500">Data Analyst</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col bg-muted/50 p-8">
+                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Jobs Matched Daily</dt>
+                <dd className="order-first text-3xl font-bold tracking-tight">10K+</dd>
+              </div>
+              <div className="flex flex-col bg-muted/50 p-8">
+                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Match Accuracy</dt>
+                <dd className="order-first text-3xl font-bold tracking-tight">94%</dd>
+              </div>
+              <div className="flex flex-col bg-muted/50 p-8">
+                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Time Saved Weekly</dt>
+                <dd className="order-first text-3xl font-bold tracking-tight">8 Hours</dd>
+              </div>
+              <div className="flex flex-col bg-muted/50 p-8">
+                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Success Rate</dt>
+                <dd className="order-first text-3xl font-bold tracking-tight">87%</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </section>
       */}
 
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Land Your Dream Job?
-          </h3>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of successful job seekers who've transformed their
-            careers with JobFit AI.
-          </p>
-
-          <div className="max-w-md mx-auto mb-8">
-            <div className="flex gap-2">
-              <Input
-                type="url"
-                placeholder="Paste job post URL..."
-                className="flex-1 h-12 text-base bg-white"
-              />
-              <Button className="bg-white text-blue-600 hover:bg-gray-100 h-12 px-6 font-semibold">
-                Try Free Now
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+      {/* Features Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Everything you need to land your next role
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              From intelligent matching to automated applications, we've got your job search covered
+            </p>
+          </div>
+          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+            <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
+              {features.map((feature) => (
+                <Card key={feature.title} className="border-0 shadow-lg relative">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                        <feature.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <Badge
+                        variant={feature.badge === "Premium Add-on" ? "secondary" : "default"}
+                        className={feature.badge === "Premium Add-on" ? "bg-orange-100 text-orange-800" : ""}
+                      >
+                        {feature.badge}
+                      </Badge>
+                    </div>
+                    <CardTitle className="mt-4">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base">{feature.description}</CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-
-          <p className="text-blue-200 text-sm">
-            No credit card required • Generate your first resume free
-          </p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h4 className="text-lg font-semibold mb-4">JobFit AI</h4>
-              <p className="text-gray-400">
-                AI-powered resume customization for job seekers worldwide.
-              </p>
-            </div>
-            <div>
-              <h5 className="font-semibold mb-4">Product</h5>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Templates
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-semibold mb-4">Support</h5>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h5 className="font-semibold mb-4">Company</h5>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Careers
-                  </Link>
-                </li>
-              </ul>
-            </div>
+      {/* How It Works Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
+            <p className="mt-4 text-lg text-muted-foreground">Land your dream job in three simple steps</p>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 JobFit AI. All rights reserved.</p>
+          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+            <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
+              {steps.map((step, index) => (
+                <div key={step.step} className="relative">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-bold">
+                      {step.step}
+                    </div>
+                    <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
+                    <p className="mt-2 text-muted-foreground">{step.description}</p>
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div className="absolute left-1/2 top-16 hidden h-8 w-px bg-border lg:block" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to automate your job search?</h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Join thousands of professionals who've stopped hunting and started matching
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Button size="lg" className="text-base">
+                Upload Resume & Start Matching
+                <Upload className="ml-2 h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="lg" className="text-base">
+                Contact Sales
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
