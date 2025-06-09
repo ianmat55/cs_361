@@ -4,12 +4,19 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { SessionProvider } from "next-auth/react";
+import { ThemeProvider } from "@/components/theme-provider"
+import { Inter } from "next/font/google"
+import type { Metadata } from "next"
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
     <html>
       <body>
@@ -25,19 +32,6 @@ export default function Layout({ children }: LayoutProps) {
   );
 }
 
-// import type React from "react"
-// import type { Metadata } from "next"
-// import { Inter } from "next/font/google"
-// import "./globals.css"
-// import { ThemeProvider } from "@/components/theme-provider"
-//
-// const inter = Inter({ subsets: ["latin"] })
-//
-// export const metadata: Metadata = {
-//   title: "ResuMatch - Resume Matching Platform",
-//   description: "Generate tailored resumes for job applications",
-// }
-//
 // export default function RootLayout({
 //   children,
 // }: Readonly<{
