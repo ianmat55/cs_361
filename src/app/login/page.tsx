@@ -1,12 +1,20 @@
 "use client";
 
+import type React from "react"
+
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
 
 export default function LoginPage() {
   const { status } = useSession();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,8 +29,15 @@ export default function LoginPage() {
     return <p>Loading...</p>;
   }
 
-  async function handleLogin(e: React.FormEvent) {
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true)
+    signIn('google', { callbackUrl: '/dashboard' })
+    setTimeout(() => setIsLoading(false), 1000) 
+  }
+
+  async function handleEmailSignIn(e: React.FormEvent) {
     e.preventDefault();
+    setIsLoading(true);
 
     const res = await signIn("credentials", {
       email,
@@ -35,63 +50,74 @@ export default function LoginPage() {
     } else {
       alert("Invalid email or password");
     }
+
+    setTimeout(() => setIsLoading(false), 1000) 
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Log in to JobFit AI
-        </h1>
-
-        {/* Email/Password Login */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
-            Login
-          </button>
-        </form>
-
-        <p className="text-sm mt-4 text-center text-gray-600">
-          Don't have an account?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
-            Register here
-          </a>
-        </p>
-
-        {/* Divider */}
-        <div className="flex items-center my-6">
-          <div className="flex-grow h-px bg-gray-300" />
-          <span className="px-4 text-sm text-gray-500">OR</span>
-          <div className="flex-grow h-px bg-gray-300" />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-primary transition-colors">
+            ResuMatch
+          </Link>
         </div>
 
-        {/* Google Login */}
-        <button
-          onClick={() => signIn("google")}
-          className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
-        >
-          Sign in with Google
-        </button>
+        <Card className="shadow-lg border-0">
+          <CardContent className="p-8">
+            <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">Log in to JobFit</h1>
+
+            <form onSubmit={handleEmailSignIn} className="space-y-4 mb-6">
+              <Input
+                type="email"
+                placeholder="Email"
+                className="h-12 border-gray-200 focus:border-primary focus:ring-primary"
+                required
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                className="h-12 border-gray-200 focus:border-primary focus:ring-primary"
+                required
+              />
+              <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Login"}
+              </Button>
+            </form>
+
+            <div className="text-center mb-6">
+              <span className="text-gray-600">Don't have an account? </span>
+              <Link href="/signup" className="text-primary hover:underline font-medium">
+                Register here
+              </Link>
+            </div>
+
+            <div className="text-center mb-6">
+              <Link href="/forgot-password" className="text-sm text-gray-500 hover:text-primary">
+                Forgot your password?
+              </Link>
+            </div>
+
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-4 text-gray-500">OR</span>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full h-12 text-base font-medium border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+            >
+              Sign in with Google
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  );
+  )
 }

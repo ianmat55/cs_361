@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle, Target, Zap, Upload, Search, Sparkles } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Home() {
   const [showInfo, setShowInfo] = useState(false);
@@ -90,6 +92,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -309,6 +312,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   )
 }
