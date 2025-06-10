@@ -1,8 +1,9 @@
 "use client"
 
-import { BarChart, Briefcase, Code, FileText, Home, Sliders, User } from "lucide-react"
+import { BarChart, FileText, Home, Settings, Target, User, Zap } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
   Sidebar,
   SidebarContent,
@@ -21,13 +22,13 @@ import {
 
 export default function DashboardSidebar() {
   const navItems = [
-    { name: "Dashboard", href: "/", icon: Home, current: true },
-    { name: "Profile", href: "/profile", icon: User, current: false },
-    { name: "Skills", href: "/skills", icon: BarChart, current: false },
-    { name: "Experience", href: "/experience", icon: Briefcase, current: false },
-    { name: "Projects", href: "/projects", icon: Code, current: false },
-    { name: "Preferences", href: "/preferences", icon: Sliders, current: false },
-    { name: "Generated Resumes", href: "/resumes", icon: FileText, current: false },
+    { name: "Dashboard", href: "/dashboard", icon: Home, current: true },
+    { name: "Job Matches", href: "/dashboard/matches", icon: Target, current: false, badge: "12" },
+    { name: "Applications", href: "/dashboard/applications", icon: Zap, current: false },
+    { name: "Profile", href: "/dashboard/profile", icon: User, current: false },
+    { name: "Resumes", href: "/dashboard/resumes", icon: FileText, current: false },
+    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart, current: false },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings, current: false },
   ]
 
   const { state } = useSidebar()
@@ -48,10 +49,34 @@ export default function DashboardSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Job Search</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {navItems.slice(0, 3).map((item) => (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton asChild isActive={item.current} tooltip={item.name}>
+                    <a href={item.href} className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.name}</span>
+                      </div>
+                      {item.badge && (
+                        <Badge variant="secondary" className="ml-auto">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Profile & Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.slice(3).map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild isActive={item.current} tooltip={item.name}>
                     <a href={item.href}>
@@ -81,7 +106,7 @@ export default function DashboardSidebar() {
         {state === "expanded" && (
           <div className="px-4 py-2">
             <Button variant="outline" size="sm" className="w-full">
-              Settings
+              Upgrade to Premium
             </Button>
           </div>
         )}

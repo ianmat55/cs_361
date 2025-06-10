@@ -22,11 +22,9 @@ export default function RootLayout({
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <SessionProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-1 min-h-[100vh]">{children}</main>
-              <Footer />
-            </div>
+            <Navbar />
+            {children}
+            <Footer />
           </SessionProvider>
         </ThemeProvider>
       </body>
