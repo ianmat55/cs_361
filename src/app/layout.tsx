@@ -18,15 +18,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html>
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <SessionProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1 min-h-[100vh]">{children}</main>
-            <Footer />
-          </div>
-        </SessionProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <SessionProvider>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1 min-h-[100vh]">{children}</main>
+              <Footer />
+            </div>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
