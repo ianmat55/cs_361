@@ -2,9 +2,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import DashboardSidebar from "@/components/dashboard-sidebar"
+import DashboardSidebar from "@/components/DashboardSidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import JobMatchCard from "@/components/job-match-card"
+import JobMatchCard from "@/components/JobMatchCard"
 import { Eye, Settings, TrendingUp, Upload } from "lucide-react"
 
 export default function Dashboard() {
