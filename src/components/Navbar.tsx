@@ -7,7 +7,7 @@
 // export default function Navbar() {
 //   const [menuOpen, setMenuOpen] = useState(false);
 //   const pathname = usePathname();
-  // const { data: session, status } = useSession();
+// const { data: session, status } = useSession();
 //
 //   if (status === "loading") {
 //     return;
@@ -128,29 +128,32 @@
 //   );
 // }
 
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { useState } from "react";
+import Link from "next/link";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const navigation = [
     { name: "Features", href: "#features" },
     { name: "How it Works", href: "#how-it-works" },
     { name: "Pricing", href: "#pricing" },
     { name: "About", href: "#about" },
-  ]
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <nav
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="text-2xl font-bold">JobFit.ai</span>
@@ -180,9 +183,15 @@ export default function Navbar() {
                     ))}
                   </div>
                   <div className="py-6">
-                    <Button asChild className="w-full">
-                      <Link href="/login">Sign In</Link>
-                    </Button>
+                    {session ? (
+                      <Button variant="ghost" onClick={() => signOut()}>
+                        Sign Out
+                      </Button>
+                    ) : (
+                      <Button variant="ghost" onClick={() => signIn()}>
+                        Sign In
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -191,21 +200,22 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <Link key={item.name} href={item.href} className="text-sm font-semibold leading-6 hover:text-primary">
+            <Link
+              key={item.name}
+              href={item.href}
+              className="text-sm font-semibold leading-6 hover:text-primary"
+            >
               {item.name}
             </Link>
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Sign In</Link>
-          </Button>
           {session ? (
-            <Button variant="ghost" asChild onClick={() => signOut()}>
+            <Button variant="ghost" onClick={() => signOut()}>
               Sign Out
             </Button>
           ) : (
-            <Button variant="ghost" asChild onClick={() => signIn()}>
+            <Button variant="ghost" onClick={() => signIn()}>
               Sign In
             </Button>
           )}
@@ -215,5 +225,5 @@ export default function Navbar() {
         </div>
       </nav>
     </header>
-  )
+  );
 }

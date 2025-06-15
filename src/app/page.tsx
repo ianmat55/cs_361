@@ -6,9 +6,23 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, Target, Zap, Upload, Search, Sparkles } from "lucide-react"
+import {
+  ArrowRight,
+  CheckCircle,
+  Target,
+  Zap,
+  Upload,
+  Search,
+  Sparkles,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import Navbar from "../components/Navbar";
@@ -70,25 +84,28 @@ export default function Home() {
         "Upgrade to generate custom resume versions for specific roles, maximizing your match score and interview chances.",
       badge: "Premium Add-on",
     },
-  ]
+  ];
 
   const steps = [
     {
       step: "01",
       title: "Upload Your Resume",
-      description: "Upload your resume and let our AI understand your skills, experience, and career goals.",
+      description:
+        "Upload your resume and let our AI understand your skills, experience, and career goals.",
     },
     {
       step: "02",
       title: "Discover Perfect Matches",
-      description: "Our semantic matching engine finds jobs that align with your profile across multiple job boards.",
+      description:
+        "Our semantic matching engine finds jobs that align with your profile across multiple job boards.",
     },
     {
       step: "03",
       title: "Apply Automatically",
-      description: "Review matches and apply automatically with personalized applications and cover letters.",
+      description:
+        "Review matches and apply automatically with personalized applications and cover letters.",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -101,11 +118,13 @@ export default function Home() {
               🎯 AI-Powered Job Matching
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-              Stop Job Hunting. Start <span className="text-primary">Job Matching</span>
+              Stop Job Hunting. Start{" "}
+              <span className="text-primary">Job Matching</span>
             </h1>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              Upload your resume once and let our AI find and apply to perfect job matches automatically. Semantic
-              matching technology discovers opportunities you'd never find manually.
+              Upload your resume once and let our AI find and apply to perfect
+              job matches automatically. Semantic matching technology discovers
+              opportunities you'd never find manually.
             </p>
 
             {/* Upload Resume CTA */}
@@ -113,8 +132,12 @@ export default function Home() {
               <div className="relative">
                 <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5 p-8 transition-colors hover:border-primary/40 hover:bg-primary/10">
                   <Upload className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Upload Your Resume</h3>
-                  <p className="text-sm text-muted-foreground mb-4 text-center">PDF Max 5MB</p>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Upload Your Resume
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4 text-center">
+                    PDF Max 5MB
+                  </p>
                   <Button size="lg" className="text-base">
                     Choose File & Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -154,8 +177,12 @@ export default function Home() {
       <section className="py-16 sm:py-20 bg-muted/30">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Or explore what's out there</h2>
-            <p className="mt-4 text-muted-foreground">See how our semantic matching works by searching for any role</p>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Or explore what's out there
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              See how our semantic matching works by searching for any role
+            </p>
 
             {/* Search Bar */}
             <div className="mt-8 mx-auto max-w-2xl">
@@ -174,15 +201,27 @@ export default function Home() {
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground">
                 <span>Popular searches:</span>
-                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto p-1 text-xs text-primary hover:text-primary/80"
+                >
                   "Remote Software Engineer"
                 </Button>
                 <span>•</span>
-                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto p-1 text-xs text-primary hover:text-primary/80"
+                >
                   "Data Scientist NYC"
                 </Button>
                 <span>•</span>
-                <Button variant="ghost" size="sm" className="h-auto p-1 text-xs text-primary hover:text-primary/80">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto p-1 text-xs text-primary hover:text-primary/80"
+                >
                   "Marketing Manager"
                 </Button>
               </div>
@@ -233,21 +272,33 @@ export default function Home() {
               Everything you need to land your next role
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              From intelligent matching to automated applications, we've got your job search covered
+              From intelligent matching to automated applications, we've got
+              your job search covered
             </p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
             <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
               {features.map((feature) => (
-                <Card key={feature.title} className="border-0 shadow-lg relative">
+                <Card
+                  key={feature.title}
+                  className="border-0 shadow-lg relative"
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                         <feature.icon className="h-6 w-6 text-primary" />
                       </div>
                       <Badge
-                        variant={feature.badge === "Premium Add-on" ? "secondary" : "default"}
-                        className={feature.badge === "Premium Add-on" ? "bg-orange-100 text-orange-800" : ""}
+                        variant={
+                          feature.badge === "Premium Add-on"
+                            ? "secondary"
+                            : "default"
+                        }
+                        className={
+                          feature.badge === "Premium Add-on"
+                            ? "bg-orange-100 text-orange-800"
+                            : ""
+                        }
                       >
                         {feature.badge}
                       </Badge>
@@ -255,7 +306,9 @@ export default function Home() {
                     <CardTitle className="mt-4">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-base">{feature.description}</CardDescription>
+                    <CardDescription className="text-base">
+                      {feature.description}
+                    </CardDescription>
                   </CardContent>
                 </Card>
               ))}
@@ -268,8 +321,12 @@ export default function Home() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
-            <p className="mt-4 text-lg text-muted-foreground">Land your dream job in three simple steps</p>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              How it works
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Land your dream job in three simple steps
+            </p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
             <div className="grid max-w-xl grid-cols-1 gap-8 lg:max-w-none lg:grid-cols-3">
@@ -280,7 +337,9 @@ export default function Home() {
                       {step.step}
                     </div>
                     <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
-                    <p className="mt-2 text-muted-foreground">{step.description}</p>
+                    <p className="mt-2 text-muted-foreground">
+                      {step.description}
+                    </p>
                   </div>
                   {index < steps.length - 1 && (
                     <div className="absolute left-1/2 top-16 hidden h-8 w-px bg-border lg:block" />
@@ -296,9 +355,12 @@ export default function Home() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to automate your job search?</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Ready to automate your job search?
+            </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Join thousands of professionals who've stopped hunting and started matching
+              Join thousands of professionals who've stopped hunting and started
+              matching
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Button size="lg" className="text-base">
@@ -314,5 +376,5 @@ export default function Home() {
       </section>
       <Footer />
     </div>
-  )
+  );
 }
