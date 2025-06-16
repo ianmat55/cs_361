@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project
 
-## Getting Started
+## 🛠️ Prerequisites
 
-First, run the development server:
+Ensure the following are installed:
 
-```bash
-npm run dev
+- **[Node.js](https://nodejs.org/)** (v18+ recommended)
+- **[Docker](https://www.docker.com/)** (to run PostgreSQL locally)
+- **[pnpm](https://pnpm.io/)** or `npm`/`yarn` (pnpm preferred)
+- **[PostgreSQL client](https://www.postgresql.org/download/)** (optional for DB inspection)
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1. Clone the repository
+
+$$
+git clone https://github.com/yourusername/jobfit.git
+cd jobfit
+$$
+
+---
+
+### 2. Start PostgreSQL with Docker
+
+$$
+docker run --name projname-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=projname -p 5432:5432 -d postgres
+$$
+
+---
+
+### 3. Set environment variables
+
+Create a `.env` file at the root:
+
+$$
+cp .env.example .env
+$$
+
+Edit `.env` and set the following:
+
+$$
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/projname
+NEXTAUTH_SECRET=your_secret_key_here
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+$$
+
+---
+
+### 4. Install dependencies
+
+$$
+pnpm install
 # or
-yarn dev
-# or
+npm install
+$$
+
+---
+
+### 5. Initialize the database
+
+$$
+npx prisma db push
+$$
+
+(Optional) Seed the database:
+
+$$
+pnpm db:seed
+$$
+
+---
+
+### 6. Start the development server
+
+$$
 pnpm dev
 # or
-bun dev
-```
+npm run dev
+$$
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit: [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✅ Optional Tools
 
-## Learn More
+- Regenerate Prisma client:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+$$
+npx prisma generate
+$$

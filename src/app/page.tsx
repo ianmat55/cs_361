@@ -1,6 +1,6 @@
+/* eslint-disable react/react-in-jsx-scope */
 "use client";
 
-import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  ArrowRight,
   CheckCircle,
   Target,
   Zap,
@@ -23,44 +22,13 @@ import {
   Search,
   Sparkles,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import ResumeUpload from "@/components/ResumeUpload";
 
 export default function Home() {
-  const [showInfo, setShowInfo] = useState(false);
   const { data: session, status } = useSession();
-  // const [profileData, setProfileData] = useState(null);
-  const [jobUrl, setJobUrl] = useState("");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     if (!session?.user?.email) return;
-
-  //     try {
-  //       const response = await fetch("/api/profile", {
-  //         method: "GET",
-  //         headers: { "Content-Type": "application/json" },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch profile");
-  //       }
-
-  //       const data = await response.json();
-  //       setProfileData(data);
-  //     } catch (error) {
-  //       console.error("Error fetching profile:", error);
-  //     }
-  //   };
-
-  //   if (status === "authenticated") {
-  //     fetchProfile();
-  //   }
-  // }, [session, status]);
 
   const features = [
     {
@@ -124,26 +92,12 @@ export default function Home() {
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Upload your resume once and let our AI find and apply to perfect
               job matches automatically. Semantic matching technology discovers
-              opportunities you'd never find manually.
+              opportunities you would never find manually.
             </p>
 
             {/* Upload Resume CTA */}
-            <div className="mt-10 mx-auto max-w-md">
-              <div className="relative">
-                <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5 p-8 transition-colors hover:border-primary/40 hover:bg-primary/10">
-                  <Upload className="h-12 w-12 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
-                    Upload Your Resume
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 text-center">
-                    PDF Max 5MB
-                  </p>
-                  <Button size="lg" className="text-base">
-                    Choose File & Get Started
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+            <div className="mt-10">
+              <ResumeUpload />
             </div>
 
             <div className="mt-8 flex items-center justify-center gap-x-8 text-sm text-muted-foreground">

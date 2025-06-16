@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma.ts"
+import { prisma } from "@/lib/prisma.ts";
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -94,9 +94,9 @@ const authOptions: NextAuthOptions = {
         });
 
         if (dbUser) {
-          token.sub = dbUser.user_id;
+          token.sub = dbUser.id;
           token.email = dbUser.email;
-          token.name = dbUser.full_name;
+          token.name = dbUser.fullName;
         }
       }
       return token;
