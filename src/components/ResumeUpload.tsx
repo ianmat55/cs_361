@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import uploadResume from "@/app/actions/uploadResume";
 
 interface ResumeUploadProps {
   onUploadComplete?: (file: File) => void;
@@ -74,14 +75,9 @@ export default function ResumeUpload({
 
       const formData = new FormData();
       formData.append("resume", file);
-      const response = await fetch("/api/resume/upload", {
-        method: "POST",
-        body: formData,
-      });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      const response = await uploadResume(formData);
+ 
       clearInterval(progressInterval);
       setUploadProgress(100);
       setUploadSuccess(true);
@@ -93,6 +89,7 @@ export default function ResumeUpload({
       }, 1500);
     } catch (error) {
       setUploadError("Upload failed. Please try again.");
+      console.error(error);
       setUploadProgress(0);
     } finally {
       setIsUploading(false);

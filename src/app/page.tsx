@@ -114,15 +114,6 @@ export default function Home() {
                 <span>Privacy protected</span>
               </div>
             </div>
-
-            <div className="mt-6 flex items-center justify-center gap-x-6">
-              <Button variant="outline" size="lg" className="text-base">
-                View Demo
-              </Button>
-              <Button variant="ghost" size="lg" className="text-base">
-                See How It Works
-              </Button>
-            </div>
           </div>
         </div>
       </section>
@@ -183,40 +174,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Stats Section */}
-      {/*
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl lg:max-w-none">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Trusted by job seekers worldwide</h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Join thousands of professionals who've automated their job search with ResuMatch
-              </p>
-            </div>
-            <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">
-              <div className="flex flex-col bg-muted/50 p-8">
-                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Jobs Matched Daily</dt>
-                <dd className="order-first text-3xl font-bold tracking-tight">10K+</dd>
-              </div>
-              <div className="flex flex-col bg-muted/50 p-8">
-                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Match Accuracy</dt>
-                <dd className="order-first text-3xl font-bold tracking-tight">94%</dd>
-              </div>
-              <div className="flex flex-col bg-muted/50 p-8">
-                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Time Saved Weekly</dt>
-                <dd className="order-first text-3xl font-bold tracking-tight">8 Hours</dd>
-              </div>
-              <div className="flex flex-col bg-muted/50 p-8">
-                <dt className="text-sm font-semibold leading-6 text-muted-foreground">Success Rate</dt>
-                <dd className="order-first text-3xl font-bold tracking-tight">87%</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
-      */}
 
       {/* Features Section */}
       <section className="py-16 sm:py-20">
